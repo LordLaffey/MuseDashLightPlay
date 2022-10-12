@@ -5,6 +5,7 @@ License: GNU General Public License
 Source: http://www.github.com/LordLaffey
 Language: cpp
 LastEditor: 2022/10/12
+version: v0.01
 */
 
 #include<bits/stdc++.h>
