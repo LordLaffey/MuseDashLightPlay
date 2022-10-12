@@ -5,7 +5,7 @@ License: GNU General Public License
 Source: http://www.github.com/LordLaffey/OBQ/
 Language: cpp
 LastEditor: 2022/10/12
-version: v1.00
+version: v1.01
 */
 
 #include<bits/stdc++.h>
@@ -27,7 +27,6 @@ void Record();
 void Thanks();
 void Help();
 void About();
-int GetKeyToRecord(char c);
 
 class SETTING{
 
@@ -191,9 +190,9 @@ void StartScreen(){
 
 void Save(int cnt){
     
-    FILE* fr=fopen("data/spectrum.rbq","r");
-    FILE* tmpw=fopen("data/tmp.rubbish","w");
-    
+    FILE* fr=fopen("data/music/spectrum.rbq","r");
+    FILE* tmpw=fopen("data/music/tmp.rubbish","w");
+
     if(fr == nullptr)
     {
         puts("Error: Cannot open file!");
@@ -211,11 +210,11 @@ void Save(int cnt){
     fclose(fr);
     fclose(tmpw);
     
-    FILE* fw=fopen("data/spectrum.rbq","w");
-    FILE* tmpr=fopen("data/tmp.rubbish","r");
+    FILE* fw=fopen("data/music/spectrum.rbq","w");
+    FILE* tmpr=fopen("data/music/tmp.rubbish","r");
     
     fprintf(fw,"%d\n",cnt);
-    
+
     for(int i=1;i<=cnt;i++)
     {
         fscanf(tmpr,"%s ",s1);
@@ -226,20 +225,20 @@ void Save(int cnt){
     fclose(fw);
     fclose(tmpr);
     
-    system("del data/tmp.rubbish");
+    system("del data/music/tmp.rubbish");
     
 }
 
 void Thanks(){
     
-    Print("Thanks for playing OSU!>w<", 20);
+    Print("Thanks for playing MDLP!>w<", 20);
     
 }
 
 void Record(){
 
     system("cls");
-    FILE* fw=fopen("data/spectrum.rbq","w");
+    FILE* fw=fopen("data/music/spectrum.rbq","w");
 
     puts("Press any key to start recording...");
 
@@ -313,7 +312,9 @@ void SETTING::Prework(){
     Sleep(OneSecond/20);
 
     if(access("data",0)==-1)
-        system("mkdir data");
+        mkdir("data");
+    if(access("data/music",0)==-1)
+        mkdir("data/music");
     if(access("data/settings.laf",0)==-1)
     {
         FILE* fw=fopen("data/settings.laf","w");
@@ -387,4 +388,3 @@ void SETTING::SaveSettings(){
     puts("The settings has saved!");
 
 }
-
