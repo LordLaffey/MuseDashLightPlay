@@ -2,7 +2,7 @@
 A recorder to record the Spectrum of OSU!.
 Author: LordLaffey
 License: GNU General Public License
-Source: http://www.github.com/LordLaffey
+Source: http://www.github.com/LordLaffey/OBQ/
 Language: cpp
 LastEditor: 2022/10/12
 version: v0.01
