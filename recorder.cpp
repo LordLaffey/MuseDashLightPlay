@@ -1,11 +1,11 @@
 /*
-A recorder to record the Spectrum of OSU!.
+A recorder to record the Spectrum of MuseDashLightPlay.
 Author: LordLaffey
 License: GNU General Public License
 Source: http://www.github.com/LordLaffey/OBQ/
 Language: cpp
 LastEditor: 2022/10/12
-version: v0.02
+version: v1.00
 */
 
 #include<bits/stdc++.h>
@@ -90,7 +90,7 @@ void Print(string s,int times){
 void Welcome(){
 
     system("cls");
-    string Welcome="Welcome to OSU!";
+    string Welcome="Welcome to MDLP!";
 
     Print(Welcome,20);
     Sleep(OneSecond/5);
@@ -114,7 +114,7 @@ void About(){
     begin:
     system("cls");
     string s;
-    Print("This is a project to record the Spectrum of OSU!\n",20);
+    Print("This is a project to record the Spectrum of MuseDashLightPlay!\n",20);
     Print("This program is written by C++.\n",20);
     Print("And it is coded by LingChen, LordLaffey and Ptilopsis_w.\n",20);
     Print("You can contact us by github:@LordLaffey,@qingchenling,@Ptilopsis_w\n",20);
@@ -298,11 +298,11 @@ int SETTING::CheckKey(char c){
     if(c==Setting.key[0]||c==Setting.key[0]-32)
         return 1;
     else if(c==Setting.key[1]||c==Setting.key[1]-32)
-        return 2;
+        return 1;
     else if(c==Setting.key[2]||c==Setting.key[2]-32)
-        return 3;
+        return 2;
     else if(c==Setting.key[3]||c==Setting.key[3]-32)
-        return 4;
+        return 2;
     else return -1;
 
 }
