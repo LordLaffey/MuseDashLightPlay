@@ -5,7 +5,7 @@ License: GNU General Public License
 Source: http://www.github.com/LordLaffey/OBQ/
 Language: cpp
 LastEditor: 2022/10/12
-version: v0.01
+version: v0.02
 */
 
 #include<bits/stdc++.h>
@@ -191,10 +191,10 @@ void StartScreen(){
 
 void Save(int cnt){
     
-    FILE* fr=fopen("spectrum.rbq","r");
-    FILE* tmpw=fopen("tmp.rubbish","w");
+    FILE* fr=fopen("data/spectrum.rbq","r");
+    FILE* tmpw=fopen("data/tmp.rubbish","w");
     
-    if(fr==NULL)
+    if(fr == nullptr)
     {
         puts("Error: Cannot open file!");
         return;
@@ -211,8 +211,8 @@ void Save(int cnt){
     fclose(fr);
     fclose(tmpw);
     
-    FILE* fw=fopen("spectrum.rbq","w");
-    FILE* tmpr=fopen("tmp.rubbish","r");
+    FILE* fw=fopen("data/spectrum.rbq","w");
+    FILE* tmpr=fopen("data/tmp.rubbish","r");
     
     fprintf(fw,"%d\n",cnt);
     
@@ -226,7 +226,7 @@ void Save(int cnt){
     fclose(fw);
     fclose(tmpr);
     
-    system("del tmp.rubbish");
+    system("del data/tmp.rubbish");
     
 }
 
@@ -239,7 +239,7 @@ void Thanks(){
 void Record(){
 
     system("cls");
-    FILE* fw=fopen("spectrum.rbq","w");
+    FILE* fw=fopen("data/spectrum.rbq","w");
 
     puts("Press any key to start recording...");
 
@@ -312,9 +312,11 @@ void SETTING::Prework(){
     Print("Checking the setting...\n",20);
     Sleep(OneSecond/20);
 
-    if(access("settings.laf",0)==-1)
+    if(access("data",0)==-1)
+        system("mkdir data");
+    if(access("data/settings.laf",0)==-1)
     {
-        FILE* fw=fopen("settings.laf","w");
+        FILE* fw=fopen("data/settings.laf","w");
         fprintf(fw,"d f j k");
         fclose(fw);
     }
@@ -327,7 +329,7 @@ void SETTING::Prework(){
 void SETTING::Load(){
     
     Print("Loading...",20);
-    FILE* fr=fopen("settings.laf","r");
+    FILE* fr=fopen("data/settings.laf","r");
     fscanf(fr,"%c %c %c %c",key[0],key[1],key[2],key[3]);
     fclose(fr);
     puts("Completed!");
@@ -379,7 +381,7 @@ void SETTING::SaveSettings(){
 
     system("cls");
     Print("Saving...",20);
-    FILE* fw=fopen("settings.laf","w");
+    FILE* fw=fopen("data/settings.laf","w");
     fprintf(fw,"%c %c %c %c",key[0],key[1],key[2],key[3]);
     fclose(fw);
     puts("The settings has saved!");
