@@ -2,7 +2,6 @@
 #define MDLP_MUSIC
 #include "header.cpp"
 #include <vector>
-#include <cstring>
 
 class Music{
 

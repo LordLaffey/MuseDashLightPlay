@@ -4,13 +4,18 @@
 #ifndef _MDLP_HEADER
 #define _MDLP_HEADER
 
-#include <thread>
 #include <atomic>
-#include <iostream>
-#include <string>
 #include <conio.h>
+#include <cstring>
+#include <iostream>
 #include <io.h>
+#include <map>
+#include <set>
+#include <string>
+#include <thread>
+#include <vector>
 #include <windows.h>
+#include <winspool.h>
 using namespace std;
 
 const int OneSecond = 1000;
