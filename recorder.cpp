@@ -2,47 +2,33 @@
 A recorder to record the Spectrum of MuseDashLightPlay.
 Author: LordLaffey
 License: GNU General Public License
-Source: http://www.github.com/LordLaffey/OBQ/
+Source: http://www.github.com/LordLaffey/MuseDashLightPlay/
 Language: cpp
-LastEditor: 2022/10/12
-version: v1.03
+LastEditor: 2022/10/13
+version: v1.04
 */
 
-#include<bits/stdc++.h>
-#include<windows.h>
-#include<conio.h>
-#include<io.h>
+#include <bits/stdc++.h>
+#include <windows.h>
+#include <conio.h>
+#include <io.h>
+#include "header.cpp"
+#include "settings.cpp"
 using namespace std;
-const int OneSecond=1000;
 
-char lower(char c){return c>=65&&c<=90?c+32:c;}
-
-void Print(string s,int times);
-void Welcome();
-bool Quit(bool confirm = false);
-bool PreExit();
-void StartScreen();
-void Save(int cnt);
-void Record();
-void Thanks();
-void Help();
 void About();
+void Help();
+bool PreExit();
+void Print(string s,int times);
+bool Quit(bool confirm = false);
+void Record();
+void RecordMain();
+void Save(int cnt);
+void StartScreen();
+void Thanks();
+void Welcome();
 
-class SETTING{
-
-    private:
-        char key[4]={'d','f','j','k'};
-    public:
-        void Prework();
-        void Load();
-        void ResetKey();
-        void PrintKey();
-        void SaveSettings();
-        int CheckKey(char c);
-
-}Setting;
-
-int main(){
+void RecordMain(){
 
     Setting.Prework();
     Welcome();
@@ -57,7 +43,7 @@ int main(){
             switch(c)
             {
                 case 's':case 'S': Record(),StartScreen();break;
-                case 'q':case 'Q': if(Quit(true)) return Thanks(),0;break;
+                case 'q':case 'Q': if(Quit(true)) return Thanks(); break;
                 case 'h':case 'H': Help(),StartScreen();break;
                 case 'a':case 'A': About(),StartScreen();break;
                 case 'r':case 'R': Setting.ResetKey(),StartScreen();break;
@@ -66,25 +52,8 @@ int main(){
         }
     }
 
-    return 0;
-
 }
 
-void Print(string s,int times){
-
-    
-    for(auto v:s)
-    {
-        cout<<v;
-        if(_kbhit())
-        {
-            char c=_getch();
-            times = INT_MAX;
-        }
-        Sleep(OneSecond/times);
-    }
-
-}
 
 void Welcome(){
 
@@ -212,16 +181,16 @@ void Save(int cnt){
     fclose(fr);
     fclose(tmpw);
     
-    FILE* fw=fopen("data/music/spectrum.rbq","w");
-    FILE* tmpr=fopen("data/music/tmp.rubbish","r");
+    FILE* fw = fopen("data/music/spectrum.rbq","w");
+    FILE* tmpr = fopen("data/music/tmp.rubbish","r");
     
-    fprintf(fw,"%d\n",cnt);
+    fprintf(fw, "%d\n", cnt);
 
-    for(int i=1;i<=cnt;i++)
+    for(int i = 1; i <= cnt; i++)
     {
-        fscanf(tmpr,"%s ",s1);
-        fscanf(tmpr,"%s\n",s2);
-        fprintf(fw,"%s %s\n",s1,s2);
+        fscanf(tmpr, "%s ", s1);
+        fscanf(tmpr, "%s\n", s2);
+        fprintf(fw, "%s %s\n", s1, s2);
     }
     
     fclose(fw);
@@ -243,7 +212,7 @@ void Thanks(){
 void Record(){
 
     system("cls");
-    FILE* fw=fopen("data/music/spectrum.rbq","w");
+    FILE* fw = fopen("data/music/spectrum.rbq","w");
 
     puts("Press any key to start recording...");
 
@@ -251,7 +220,7 @@ void Record(){
     {
         if(_kbhit())
         {
-            char c=_getch();
+            char c = _getch();
             break;
         }
     }
@@ -290,102 +259,5 @@ void Record(){
     fclose(fw);
 
     Save(cnt);
-
-}
-
-int SETTING::CheckKey(char c){
-
-    if(c==Setting.key[0]||c==Setting.key[0]-32)
-        return 1;
-    else if(c==Setting.key[1]||c==Setting.key[1]-32)
-        return 1;
-    else if(c==Setting.key[2]||c==Setting.key[2]-32)
-        return 2;
-    else if(c==Setting.key[3]||c==Setting.key[3]-32)
-        return 2;
-    else return -1;
-
-}
-
-void SETTING::Prework(){
-
-    Print("Checking the files...\n",20);
-    Sleep(OneSecond/20);
-
-    if(access("data",0)==-1)
-        mkdir("data");
-    if(access("data/music",0)==-1)
-        mkdir("data/music");
-    if(access("data/settings.laf",0)==-1)
-    {
-        FILE* fw=fopen("data/settings.laf","w");
-        fprintf(fw,"d f j k");
-        fclose(fw);
-    }
-
-    puts("Completed!");
-    Sleep(OneSecond/20);
-
-}
-
-void SETTING::Load(){
-    
-    Print("Loading...",20);
-    FILE* fr=fopen("data/settings.laf","r");
-    fscanf(fr,"%c %c %c %c",key[0],key[1],key[2],key[3]);
-    fclose(fr);
-    puts("Completed!");
-    
-}
-
-void SETTING::ResetKey(){
-
-    begin:
-    system("cls");
-    puts("Input a string just like \"dfjk\" to reset the key.");
-
-    string s;
-    getline(cin, s);
-    puts("Sure?(y/n)");
-    while(1)
-    {
-        if(_kbhit())
-        {
-            char c=_getch();
-            if(c=='n'||c=='N')
-                goto begin;
-            else if(c=='y'||c=='Y')
-                break;
-        }
-    }
-    if(s[0]==s[1]||s[0]==s[2]||s[0]==s[3]||s[1]==s[2]||s[1]==s[3]||s[2]==s[3])
-    {
-        puts("Error: The key cannot be the same!");
-        Sleep(OneSecond);
-        goto begin;
-    }
-    key[0]=lower(s[0]),key[1]=lower(s[1]),key[2]=lower(s[2]),key[3]=lower(s[3]);
-    printf("Your key is '%c','%c','%c','%c' now.\n",key[0],key[1],key[2],key[3]);
-
-    Sleep(OneSecond);
-    SaveSettings();
-
-}
-
-void SETTING::PrintKey(){
-
-    puts("Your key is:");
-    printf("'%c','%c','%c','%c'\n",key[0],key[1],key[2],key[3]);
-
-}
-
-void SETTING::SaveSettings(){
-
-    system("cls");
-    Print("Saving...",20);
-    FILE* fw=fopen("data/settings.laf","w");
-    fprintf(fw,"%c %c %c %c",key[0],key[1],key[2],key[3]);
-    fclose(fw);
-    puts("The settings has saved!");
 
 }
