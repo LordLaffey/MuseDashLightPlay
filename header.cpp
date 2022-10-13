@@ -1,19 +1,22 @@
 #ifndef _MDLP_HEADER
 #define _MDLP_HEADER
 
-#include <conio.h>
-#include <string>
-#include <io.h>
+#include <thread>
+#include <atomic>
 #include <iostream>
+#include <string>
+#include <conio.h>
+#include <io.h>
 #include <windows.h>
 using namespace std;
 
-const int OneSecond=1000;
+const int OneSecond = 1000;
 
 char lower(char c)
 {
     return (c>=65 and c<=90) ? c+32 : c;
 }
+
 void Print(string s,int times)
 {
     for(auto v:s)
@@ -28,6 +31,7 @@ void Print(string s,int times)
     }
 
 }
+
 char WaitForInput()
 {
     char ch = 0;
@@ -37,6 +41,22 @@ char WaitForInput()
         else { ch = _getch();break; }
     }
     return ch;
+}
+
+void ClearScreen()
+{
+	COORD coordScreen = {0, 0};
+	DWORD cCharsWritten;
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	DWORD dwConSize;
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);    
+    
+	GetConsoleScreenBufferInfo(hConsole, &csbi);
+	dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
+	FillConsoleOutputCharacter(hConsole, TEXT(' '), dwConSize, coordScreen, &cCharsWritten);
+	GetConsoleScreenBufferInfo(hConsole, &csbi);
+	FillConsoleOutputAttribute(hConsole, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten);
+	SetConsoleCursorPosition(hConsole, coordScreen);
 }
 
 #endif // _MDLP_HEADER
