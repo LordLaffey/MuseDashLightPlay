@@ -1,11 +1,7 @@
-/*
-A recorder to record the Spectrum of MuseDashLightPlay.
-Author: LordLaffey
-License: GNU General Public License
-Source: http://www.github.com/LordLaffey/MuseDashLightPlay/
-Language: cpp
-LastEditor: 2022/10/13
-version: v1.11
+/**
+ * @details A recorder to record the Spectrum of MuseDashLightPlay.
+ * @author LordLaffey
+ * @version v1.11
 */
 
 #include "header.cpp"
