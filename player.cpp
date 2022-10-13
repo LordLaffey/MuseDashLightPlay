@@ -1,11 +1,7 @@
-/*
-The player of MDLP
-Author: Ptilosis_w, LordLaffey
-License: GNU General Public License
-Source: http://www.github.com/LordLaffey/MuseDashLightPlay/
-Language: cpp
-LastEditor: 2022/10/13
-version: v0.05
+/**
+ * @details The player of MDLP
+ * @author Ptilosis_w, LordLaffey
+ * @version v0.04
 */
 
 #include "header.cpp"
@@ -96,7 +92,7 @@ void CheckKeys()
             char c = _getch();
             if(note[now_note].GetState() >= 3)
                 continue;
-            if(Setting.CheckKey(c) == note[now_note].line)
+            if(setting.checkKey(c) == note[now_note].line)
             {
                 switch(note[now_note].GetState())
                 {

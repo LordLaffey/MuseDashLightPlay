@@ -62,7 +62,7 @@ void Help()
 {
     begin:
     ClearScreen();
-    Setting.PrintKey();
+    setting.printKey();
     Sleep(OneSecond/10);
     if(PreExit()) return ;
     else goto begin;
@@ -152,7 +152,7 @@ void Record()
         {
             char c = _getch();
             if(c == 'q' or c == 'Q') break;
-            int key = Setting.CheckKey(c);
+            int key = setting.checkKey(c);
             if(key != -1)
             {
                 fprintf(fw, "%d ", clock()-start_time);
