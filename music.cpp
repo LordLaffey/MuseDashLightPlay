@@ -35,6 +35,7 @@ void Music::Load(){
 
     ClearScreen();
     Print("Loading Music...\n", 20);
+    list.clear();
 
     string path=".\\data\\music\\";
     long long hFile = 0;
