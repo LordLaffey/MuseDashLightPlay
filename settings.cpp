@@ -2,10 +2,7 @@
 #define _MDLP_SETTING
 
 #include "header.cpp"
-#include <winspool.h>
-#include <vector>
-#include <map>
-#include <set>
+
 using namespace std;
 
 /**

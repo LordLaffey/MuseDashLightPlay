@@ -1,8 +1,7 @@
-#ifndef MDLP_MUSIC
-#define MDLP_MUSIC
+#ifndef _MDLP_MUSIC
+#define _MDLP_MUSIC
+
 #include "header.cpp"
-#include <vector>
-#include <cstring>
 
 class Music{
 
@@ -99,4 +98,4 @@ FILE* Music::ChooseMusic(){
 
 }
 
-#endif // MDLP_MUSIC
+#endif // _MDLP_MUSIC
