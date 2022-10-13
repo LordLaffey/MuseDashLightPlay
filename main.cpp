@@ -43,7 +43,7 @@ int main()
         cout << "===============================MDLP Main Menu=============================" << endl;
         cout << "1. Play(p)" << endl;
         cout << "2. Record(r)" << endl;
-        cout << "3. Music list(m)" <<endl;
+        cout << "3. Music list(m)" << endl;
         cout << "4. Settings(s)" << endl;
         cout << "5. Quit(q)" << endl;
         cout << "==========================================================================" << endl;
