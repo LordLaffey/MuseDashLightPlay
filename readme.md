@@ -13,4 +13,4 @@ v0.05 增加谱面列表，支持自定义键位与键数
 ## recorder:
 v1.11 支持 record 多个谱面
 
-v1.12 修复了 record 谱面的 bug
+v1.12 修复了 record 谱面后没有立即加载的 bug
