@@ -1,4 +1,5 @@
-
+#ifndef MDLP_MUSIC
+#define MDLP_MUSIC
 #include "header.cpp"
 #include <vector>
 #include <cstring>
@@ -97,3 +98,5 @@ FILE* Music::ChooseMusic(){
     return fopen(path.data(),"r");
 
 }
+
+#endif // MDLP_MUSIC

@@ -6,6 +6,7 @@
 
 #include "header.cpp"
 #include "settings.cpp"
+#include "Music.cpp"
 using namespace std;
 
 void About();
@@ -81,6 +82,7 @@ bool PreExit()
 
 void Save(string name,int cnt)
 {
+    ClearScreen();
     Print("Saveing...\n", 20);
     Sleep(OneSecond/2);
     FILE* fr = fopen(name.data(), "r");
@@ -122,6 +124,9 @@ void Save(string name,int cnt)
     
     puts("Saved!");
     Sleep(OneSecond/2);
+
+    puts("Reloading music list...");
+    Music.Load();
 }
 
 void Record()
