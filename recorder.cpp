@@ -5,7 +5,7 @@ License: GNU General Public License
 Source: http://www.github.com/LordLaffey/MuseDashLightPlay/
 Language: cpp
 LastEditor: 2022/10/13
-version: v1.10
+version: v1.11
 */
 
 #include "header.cpp"
@@ -17,7 +17,7 @@ void Help();
 bool PreExit();
 void Record();
 void RecordMain();
-void Save(int cnt);
+void Save(string name,int cnt);
 
 void RecordMain()
 {
@@ -53,10 +53,10 @@ void About()
 {
     begin:
     ClearScreen();
-    Print("This is a project to record the Spectrum of MuseDashLightPlay!\n",20);
+    Print("This is a project to record the Spectrum of MuseDashLightPlay.\n",20);
     Print("This program is written by C++.\n",20);
     Print("And it is coded by LingChen, LordLaffey and Ptilopsis_w.\n",20);
-    Print("You can contact us by github:@LordLaffey,@qingchenling,@Ptilopsis_w\n",20);
+    Print("You can contact us by github:@LordLaffey, @qingchenling, @Ptilopsis_w.\n",20);
     
     if(PreExit()) return;
     else goto begin;
@@ -83,11 +83,11 @@ bool PreExit()
         return false;
 }
 
-void Save(int cnt)
+void Save(string name,int cnt)
 {
     Print("Saveing...\n", 20);
     Sleep(OneSecond/2);
-    FILE* fr = fopen("data/music/spectrum.rbq", "r");
+    FILE* fr = fopen(name.data(), "r");
     FILE* tmpw = fopen("data/music/tmp.rubbish", "w");
     
     if(fr == nullptr)
@@ -107,7 +107,7 @@ void Save(int cnt)
     fclose(fr);
     fclose(tmpw);
     
-    FILE* fw = fopen("data/music/spectrum.rbq","w");
+    FILE* fw = fopen(name.data(),"w");
     FILE* tmpr = fopen("data/music/tmp.rubbish","r");
     
     fprintf(fw, "%d\n", cnt);
@@ -131,7 +131,12 @@ void Save(int cnt)
 void Record()
 {
     ClearScreen();
-    FILE* fw = fopen("data/music/spectrum.rbq","w");
+    puts("Please input the name of the music:");
+    string name;
+    cin >> name;
+    ClearScreen();
+    name="data/music/"+name+".rbq";
+    FILE* fw = fopen(name.data(),"w");
     cout << "Press any key to start recording..." << endl;
     
     WaitForInput();
@@ -164,5 +169,5 @@ void Record()
     }
     
     fclose(fw);
-    Save(cnt);
+    Save(name,cnt);
 }
