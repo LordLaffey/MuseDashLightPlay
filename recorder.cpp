@@ -5,7 +5,7 @@ License: GNU General Public License
 Source: http://www.github.com/LordLaffey/OBQ/
 Language: cpp
 LastEditor: 2022/10/12
-version: v1.01
+version: v1.03
 */
 
 #include<bits/stdc++.h>
@@ -190,6 +190,8 @@ void StartScreen(){
 
 void Save(int cnt){
     
+    Print("Saveing...\n",20);
+    Sleep(OneSecond/2);
     FILE* fr=fopen("data/music/spectrum.rbq","r");
     FILE* tmpw=fopen("data/music/tmp.rubbish","w");
 
@@ -225,7 +227,10 @@ void Save(int cnt){
     fclose(fw);
     fclose(tmpr);
     
-    system("del data/music/tmp.rubbish");
+    system("del data\\music\\tmp.rubbish");
+    
+    puts("Saved!");
+    Sleep(OneSecond/2);
     
 }
 
@@ -284,11 +289,7 @@ void Record(){
 
     fclose(fw);
 
-    Print("Saveing...\n",20);
-    Sleep(OneSecond/2);
     Save(cnt);
-    puts("Saved!");
-    Sleep(OneSecond/2);
 
 }
 
@@ -308,7 +309,7 @@ int SETTING::CheckKey(char c){
 
 void SETTING::Prework(){
 
-    Print("Checking the setting...\n",20);
+    Print("Checking the files...\n",20);
     Sleep(OneSecond/20);
 
     if(access("data",0)==-1)
