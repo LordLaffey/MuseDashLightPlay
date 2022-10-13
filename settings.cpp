@@ -72,6 +72,7 @@ class Setting{
         void set(vector< pair<char,int> > newkeys) {
 
             keys=newkeys;
+            write();
 
         }
 
@@ -118,10 +119,10 @@ void ResetKey(){
     {
         char c;
         int x;
-        scanf("%c", &c);
+        while((c=getchar())=='\n'||c=='\r');
         if(c=='0')
             break;
-        scanf("%d\n", &x);
+        scanf("%d", &x);
 
         c=lower(c);
         if(st.count(c))
