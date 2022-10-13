@@ -14,7 +14,7 @@ void Help();
 bool PreExit();
 void Record();
 void RecordMain();
-void Save(string name,int cnt);
+void Save(string name,int cnt,int len);
 
 void RecordMain()
 {
@@ -80,7 +80,7 @@ bool PreExit()
         return false;
 }
 
-void Save(string name,int cnt)
+void Save(string name,int cnt,int len)
 {
     ClearScreen();
     Print("Saveing...\n", 20);
@@ -108,7 +108,7 @@ void Save(string name,int cnt)
     FILE* fw = fopen(name.data(),"w");
     FILE* tmpr = fopen("data/music/tmp.rubbish","r");
     
-    fprintf(fw, "%d\n", cnt);
+    fprintf(fw, "%d %d\n", cnt, len);
     
     for(int i = 1; i <= cnt; i++)
     {
@@ -170,5 +170,5 @@ void Record()
     }
     
     fclose(fw);
-    Save(name,cnt);
+    Save(name,cnt,clock()-start_time);
 }
