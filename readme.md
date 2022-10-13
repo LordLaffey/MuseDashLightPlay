@@ -6,8 +6,6 @@
 
 Muse Dash Light Play - 一款基于控制台的简约版音游。
 
-[github author=LordLaffey project=MuseDashLightPlay][/github]
-
 界面：
 
 ```
@@ -19,7 +17,7 @@ Perfect         Bad             Miss
 ===============================================
 ```
 
-使用方法：编译运行 `main.exe`。
+使用方法：编译运行 `main.exe`
 
 欢迎游玩，提出建议，或做出贡献（提交 Issues 和 PRs），万分感激 >w<。
 
@@ -45,16 +43,15 @@ v1.12 修复了 record 谱面后没有立即加载的 bug
 
 最后更新于 2022-10-13 20:53
 
-[checkbox checked="false"]xkey mode[/checkbox]
+- key mode
+- 筛选界面（musedash/xkey）
 
-[checkbox checked="false"]筛选界面（musedash/xkey）[/checkbox]
+- 完善谱面信息
 
-[checkbox checked="false"]完善谱面信息[/checkbox]
+- UI优化
 
-[checkbox checked="false"]UI优化[/checkbox]
+- 谱面排行榜与评论区
 
-[checkbox checked="false"]谱面排行榜与评论区[/checkbox]
+- 谱面预览
 
-[checkbox checked="false"]谱面预览[/checkbox]
-
-[checkbox checked="false"]谱面难度系统与对应筛选系统[/checkbox]
+- 谱面难度系统与对应筛选系统
