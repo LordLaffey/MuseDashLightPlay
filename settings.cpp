@@ -3,60 +3,85 @@
 
 #include "header.cpp"
 #include <winspool.h>
+#include <vector>
+#include <map>
+#include <set>
 using namespace std;
 
-
-class SETTING{
+/**
+ * @details KeyChecker Class
+*/
+class Setting{
 
     private:
-        char key[4]={'d','f','j','k'};
+        vector< pair<char,int> > keys;
+        void write()
+        {
+            FILE* fw=fopen("data/settings.laf","w");
+            for(pair<char,int> key : keys)
+            fprintf(fw,"%c %d\n", key.first, key.second);
+            fclose(fw);
+        }
+        void read()
+        {
+            FILE* fr = fopen("data/settings.laf","r");
+            keys.clear();
+            char c;
+            int x;
+            while(fscanf(fr, "%c %d\n", &c, &x)!=EOF)
+            keys.emplace_back(c, x);
+            fclose(fr);
+        }
     public:
-        void CheckFiles();
-        void Load();
-        void SettingsMain();
-        void ResetKey();
-        void PrintKey();
-        void SaveSettings();
-        int CheckKey(char c);
+        void load(){
 
-}Setting;
+            ClearScreen();
+            Print("Loading...\n",20);
 
-int SETTING::CheckKey(char c){
+            if(access("data",0)==-1)
+                mkdir("data");
+            if(access("data/music",0)==-1)
+                mkdir("data/music");
+            if(access("data/settings.laf",0)==-1)
+            {
+                keys={{'d',1}, {'f',1}, {'j',2}, {'k',2}};
+                write();
+            }
 
-    if(c==Setting.key[0]||c==Setting.key[0]-32)
-        return 1;
-    else if(c==Setting.key[1]||c==Setting.key[1]-32)
-        return 1;
-    else if(c==Setting.key[2]||c==Setting.key[2]-32)
-        return 2;
-    else if(c==Setting.key[3]||c==Setting.key[3]-32)
-        return 2;
-    else return -1;
+            puts("Completed!");
+            Sleep(OneSecond/20);
 
-}
+        }
+        int checkKey(char c){
 
-void SETTING::CheckFiles(){
+            for(pair<char,int> key : keys)
+            if(c==key.first||c==key.first-32)
+                return key.second;
+            return -1;
 
-    Print("Checking the files...\n",20);
-    Sleep(OneSecond/20);
+        }
+        void printKey(){
+    
+            ClearScreen();
+            puts("Your key is:");
+            for(pair<char,int> key : keys)
+            printf("%c %d\n", key.first, key.second);
+            WaitForInput();
+            
+        }
+        void set(vector< pair<char,int> > newkeys) {
 
-    if(access("data",0)==-1)
-        mkdir("data");
-    if(access("data/music",0)==-1)
-        mkdir("data/music");
-    if(access("data/settings.laf",0)==-1)
-    {
-        FILE* fw=fopen("data/settings.laf","w");
-        fprintf(fw,"d f j k");
-        fclose(fw);
-    }
+            keys=newkeys;
 
-    puts("Completed!");
-    Sleep(OneSecond/20);
+        }
 
-}
+};
 
-void SETTING::SettingsMain(){
+Setting setting;
+
+void ResetKey();
+
+void SettingsMain(){
     
     system("cls");
     Print("Settings:\n",20);
@@ -67,8 +92,8 @@ void SETTING::SettingsMain(){
     {
         char c = WaitForInput();
         switch(c){
-            case '1': Setting.ResetKey(); goto end;
-            case '2': Setting.PrintKey(); goto end;
+            case '1': ResetKey(); goto end;
+            case '2': setting.printKey(); goto end;
             case '3': goto end;
             default: break;
         }
@@ -77,27 +102,37 @@ void SETTING::SettingsMain(){
 
 }
 
-void SETTING::Load(){
+void ResetKey(){
+
+    vector< pair<char,int> > keys;
+    map<int,int> mp;
+    set<char> st;
     
-    ClearScreen();
-    Print("Loading...\n",20);
-    FILE* fr = fopen("data/settings.laf","r");
-    fscanf(fr,"%c %c %c %c", &key[0], &key[1], &key[2], &key[3]);
-    fclose(fr);
-    cout << "Completed!" << endl;
-    Sleep(OneSecond/2);
-    ClearScreen();
-}
-
-void SETTING::ResetKey(){
-
     begin:
     system("cls");
-    puts("Input a string just like \"dfjk\" to reset the key.");
+    puts("Input a char and a num on a line, you can input many until \"0\"");
 
-    string s;
-    getline(cin, s);
-    puts("Sure?(y/n)");
+    keys.clear(); mp.clear(); st.clear();
+
+    while(1)
+    {
+        char c;
+        int x;
+        scanf("%c", &c);
+        if(c=='0')
+            break;
+        scanf("%d\n", &x);
+
+        c=lower(c);
+        if(st.count(c))
+        {
+            puts("Error: The key cannot be the same!");
+            continue;
+        }
+        keys.emplace_back(c, x);
+    }
+
+    puts("Sure to Save?");
     while(1)
     {
         if(_kbhit())
@@ -109,40 +144,12 @@ void SETTING::ResetKey(){
                 break;
         }
     }
-    if(s[0]==s[1]||s[0]==s[2]||s[0]==s[3]||s[1]==s[2]||s[1]==s[3]||s[2]==s[3])
-    {
-        puts("Error: The key cannot be the same!");
-        Sleep(OneSecond);
-        goto begin;
-    }
-    key[0]=lower(s[0]),key[1]=lower(s[1]),key[2]=lower(s[2]),key[3]=lower(s[3]);
-    printf("Your key is '%c','%c','%c','%c' now.\n",key[0],key[1],key[2],key[3]);
 
     Sleep(OneSecond);
-    SaveSettings();
-
-}
-
-void SETTING::PrintKey(){
-    
-    puts("Your key is:");
-    printf("'%c','%c','%c','%c'\n",key[0],key[1],key[2],key[3]);
-    WaitForInput();
-    
-}
-
-void SETTING::SaveSettings(){
-
-    system("cls");
-    Print("Saving...",20);
-    FILE* fw=fopen("data/settings.laf","w");
-    fprintf(fw,"%c %c %c %c",key[0],key[1],key[2],key[3]);
-    fclose(fw);
+    puts("Saving...");
+    setting.set(keys);
     puts("The settings has saved!");
 
 }
-
-
-
 
 #endif // _MDLP_SETTING
