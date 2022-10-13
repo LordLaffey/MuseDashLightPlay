@@ -17,7 +17,7 @@ class Setting{
         {
             FILE* fw=fopen("data/settings.laf","w");
             for(pair<char,int> key : keys)
-            fprintf(fw,"%c %d\n", key.first, key.second);
+                fprintf(fw,"%c %d\n", key.first, key.second);
             fclose(fw);
         }
         void read()
@@ -47,6 +47,7 @@ class Setting{
                 write();
             }
 
+            read();
             puts("Completed!");
             Sleep(OneSecond/20);
 
@@ -64,7 +65,7 @@ class Setting{
             ClearScreen();
             puts("Your key is:");
             for(pair<char,int> key : keys)
-            printf("%c %d\n", key.first, key.second);
+                printf("%c %d\n", key.first, key.second);
             WaitForInput();
             
         }

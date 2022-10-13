@@ -137,6 +137,7 @@ void PrintScreen()
         this_thread::sleep_for(chrono::milliseconds(20));
     }
     ClearScreen();
+    Sleep(OneSecond);
     cout << "Perfect\t\tGood\t\tMiss" << endl;
     cout << (int)perfect_tot << "\t\t" << (int)great_tot << "\t\t" << (int)miss_tot << endl;
 }
