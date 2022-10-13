@@ -1,5 +1,5 @@
 # MuseDashLightPlay
-简约版 MuseDash v0.05
+基于控制台运行的简约版 MuseDash v0.05
 
 食用方法：编译运行 main.cpp
 
@@ -12,3 +12,5 @@ v0.05 增加谱面列表，支持自定义键位与键数
 
 ## recorder:
 v1.11 支持 record 多个谱面
+
+v1.12 修复了 record 谱面后没有立即加载的 bug
