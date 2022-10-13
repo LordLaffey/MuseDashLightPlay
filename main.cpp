@@ -12,13 +12,13 @@
 #include "player.cpp"
 #include "settings.cpp"
 #include "recorder.cpp"
-#include "Music.cpp"
 using namespace std;
 
 int main()
 {   
     ClearScreen();
     setting.load();
+    Music.Load();
     while(true)
     {
         ClearScreen();
