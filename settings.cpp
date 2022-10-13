@@ -15,6 +15,7 @@ class Setting{
 
     private:
         vector< pair<char,int> > keys;
+        int num;
         void write()
         {
             FILE* fw=fopen("data/settings.laf","w");
@@ -29,7 +30,7 @@ class Setting{
             char c;
             int x;
             while(fscanf(fr, "%c %d\n", &c, &x)!=EOF)
-            keys.emplace_back(c, x);
+                keys.emplace_back(c, x);
             fclose(fr);
         }
     public:
@@ -45,6 +46,7 @@ class Setting{
             if(access("data/settings.laf",0)==-1)
             {
                 keys={{'d',1}, {'f',1}, {'j',2}, {'k',2}};
+                num=2;
                 write();
             }
 
@@ -69,9 +71,15 @@ class Setting{
             WaitForInput();
             
         }
-        void set(vector< pair<char,int> > newkeys) {
+        void set(vector< pair<char,int> > newkeys, int num) {
 
             keys=newkeys;
+            this->num=num;
+
+        }
+        int getKeyNum() {
+
+            return num;
 
         }
 
@@ -105,14 +113,15 @@ void SettingsMain(){
 void ResetKey(){
 
     vector< pair<char,int> > keys;
-    map<int,int> mp;
     set<char> st;
+    int num;
     
     begin:
     system("cls");
     puts("Input a char and a num on a line, you can input many until \"0\"");
 
-    keys.clear(); mp.clear(); st.clear();
+    keys.clear(); st.clear();
+    num=0;
 
     while(1)
     {
@@ -130,6 +139,7 @@ void ResetKey(){
             continue;
         }
         keys.emplace_back(c, x);
+        num=max(num, x);
     }
 
     puts("Sure to Save?");
@@ -147,7 +157,7 @@ void ResetKey(){
 
     Sleep(OneSecond);
     puts("Saving...");
-    setting.set(keys);
+    setting.set(keys, num);
     puts("The settings has saved!");
 
 }
