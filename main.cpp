@@ -11,7 +11,6 @@ version: v0.05
 #include "player.cpp"
 #include "settings.cpp"
 #include "recorder.cpp"
-#include "Music.cpp"
 using namespace std;
 
 bool EnsureQuit(){
@@ -37,6 +36,7 @@ int main()
     ClearScreen();
     Setting.CheckFiles();
     Setting.Load();
+    Music.Load();
     while(true)
     {
         ClearScreen();

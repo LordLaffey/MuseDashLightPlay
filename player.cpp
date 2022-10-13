@@ -5,11 +5,12 @@ License: GNU General Public License
 Source: http://www.github.com/LordLaffey/MuseDashLightPlay/
 Language: cpp
 LastEditor: 2022/10/13
-version: v0.04
+version: v0.05
 */
 
 #include "header.cpp"
 #include "settings.cpp"
+#include "Music.cpp"
 
 using namespace std;
 
@@ -30,11 +31,12 @@ namespace song {
 using namespace song;
 
 
+string file_name;
 int start_time;
 atomic<int> now_note, can_seen;
 atomic<int> perfect_tot, great_tot, miss_tot;
 
-bool LoadSpectrum();
+bool LoadSpectrum(FILE*);
 char WaitForInput();
 void PrintScreen();
 void CheckKeys();
@@ -45,13 +47,14 @@ void PlayerMain();
 void PlayerMain()
 {
     ClearScreen();
-    
-    if(!LoadSpectrum()) return void();
+
+    FILE* file = Music.ChooseMusic();
+
+    if(!LoadSpectrum(file)) return void();
     
     cout << "Press any key to start" << endl;
     
     WaitForInput();
-    
     
     Print("Ready...\n", 9);
     Print("GO!!!\n", 6);
@@ -63,7 +66,7 @@ void PlayerMain()
     thread check(CheckKeys);
     print.join(); check.join();
     
-    cout << "-----------------------------------------------";
+    cout << "-----------------------------------------------" << endl;
     cout << "Ended" << endl;
     cout << "Press any key return to the main menu" << endl;
     WaitForInput();
@@ -153,14 +156,14 @@ int note::GetState()
     else return 4;
 }
 
-bool LoadSpectrum()
+bool LoadSpectrum(FILE* fr)
 {
     cout << "Loading spectrum..." << endl;
     Sleep(OneSecond);
-    FILE* fr = fopen("data/music/spectrum.rbq","r");
     if(fr == nullptr)
     {
         cout << "No spectrum found" << endl;
+        Sleep(OneSecond);
         return false;
     }
     
