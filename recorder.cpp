@@ -1,7 +1,7 @@
 /**
  * @details A recorder to record the Spectrum of MuseDashLightPlay.
  * @author LordLaffey
- * @version v1.11
+ * @version v1.12
 */
 
 #include "header.cpp"
