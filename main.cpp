@@ -4,33 +4,41 @@ __    __     _____     __         ______
 \ \ \-./\ \  \ \ \/\ \ \ \ \____  \ \  _-/ 
  \ \_\ \ \_\  \ \____-  \ \_____\  \ \_\   
   \/_/  \/_/   \/____/   \/_____/   \/_/   
-version: v0.01
+version: v0.03
 */
 
-#include <iostream>
 #include "header.cpp"
 #include "player.cpp"
+#include "settings.cpp"
 #include "recorder.cpp"
 using namespace std;
 
 int main()
-{
-    while(1)
+{   
+    Setting.CheckFiles();
+    Setting.Load();
+    while(true)
     {
         ClearScreen();
-        cout << "Main Menu:" << endl;
-        cout << "----------------------------------" << endl;
-        cout << "Record(r)" << endl;
-        cout << "Play(p)" << endl;
-        cout << "Quit(q)" << endl;
+        cout << "===============================MDLP Main Menu=============================" << endl;
+        cout << "1. Play(p)" << endl;
+        cout << "2. Record(r)" << endl;
+        cout << "3. Settings(s)" << endl;
+        cout << "4. Quit(q)" << endl;
+        cout << "==========================================================================" << endl;
+        
         char c = WaitForInput();
         switch(c)
         {
-            case 'r': RecordMain(); break;
-            case 'p': PlayerMain(); break;
-            case 'q': goto end;
+            case 'p': case 'P': PlayerMain(); break;
+            case 'r': case 'R': RecordMain(); break;
+            case 's': case 'S': Setting.SettingsMain(); break;
+            case 'q': case 'Q': goto end;
         }
     }
     
-    end:;
+    end:
+    
+    ClearScreen();
+    Print("Thanks for playing MDLP  >w<", 20);
 }

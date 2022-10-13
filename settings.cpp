@@ -1,14 +1,8 @@
 #ifndef _MDLP_SETTING
 #define _MDLP_SETTING
 
-#include <conio.h>
-#include <cstdlib>
-#include <io.h>
-#include <cstdio>
-#include <iostream>
-#include <string>
-#include <windows.h>
 #include "header.cpp"
+#include <winspool.h>
 using namespace std;
 
 
@@ -17,8 +11,9 @@ class SETTING{
     private:
         char key[4]={'d','f','j','k'};
     public:
-        void Prework();
+        void CheckFiles();
         void Load();
+        void SettingsMain();
         void ResetKey();
         void PrintKey();
         void SaveSettings();
@@ -40,7 +35,7 @@ int SETTING::CheckKey(char c){
 
 }
 
-void SETTING::Prework(){
+void SETTING::CheckFiles(){
 
     Print("Checking the files...\n",20);
     Sleep(OneSecond/20);
@@ -61,14 +56,36 @@ void SETTING::Prework(){
 
 }
 
+void SETTING::SettingsMain(){
+    
+    system("cls");
+    Print("Settings:\n",20);
+    cout << "1. Reset the keys" << endl;
+    cout << "2. Print the keys" << endl;
+    cout << "3. Back\n" << endl;
+    while(true)
+    {
+        char c = WaitForInput();
+        switch(c){
+            case '1': Setting.ResetKey(); goto end;
+            case '2': Setting.PrintKey(); goto end;
+            case '3': goto end;
+            default: break;
+        }
+    }
+    end:;
+
+}
+
 void SETTING::Load(){
     
     Print("Loading...",20);
     FILE* fr = fopen("data/settings.laf","r");
     fscanf(fr,"%c %c %c %c", &key[0], &key[1], &key[2], &key[3]);
     fclose(fr);
-    puts("Completed!");
-    
+    cout << "Completed!" << endl;
+    Sleep(OneSecond/2);
+    ClearScreen();
 }
 
 void SETTING::ResetKey(){
@@ -106,10 +123,11 @@ void SETTING::ResetKey(){
 }
 
 void SETTING::PrintKey(){
-
+    
     puts("Your key is:");
     printf("'%c','%c','%c','%c'\n",key[0],key[1],key[2],key[3]);
-
+    WaitForInput();
+    
 }
 
 void SETTING::SaveSettings(){

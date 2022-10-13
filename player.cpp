@@ -8,14 +8,6 @@ LastEditor: 2022/10/13
 version: v0.04
 */
 
-#include <atomic>
-#include <cstring>
-#include <fstream>
-#include <iostream>
-#include <chrono>
-#include <conio.h>
-#include <thread>
-#include <windows.h>
 #include "header.cpp"
 #include "settings.cpp"
 
@@ -33,46 +25,61 @@ namespace song {
         int time, line;
         int GetState();
     } note[100000];
+    void reset();
 }
 using namespace song;
 
 
 int start_time;
 atomic<int> now_note, can_seen;
-atomic<int> perfect_tot, great_tot;
-atomic<int> miss_tot;
+atomic<int> perfect_tot, great_tot, miss_tot;
 
-void ClearScreen();
 bool LoadSpectrum();
 char WaitForInput();
 void PrintScreen();
-void ListenKeys();
+void CheckKeys();
 int NowTime();
 void LoadSettings();
 void PlayerMain();
 
 void PlayerMain()
 {
-    if(!LoadSpectrum())
-        return ;
-    Setting.Load();
+    ClearScreen();
+    
+    if(!LoadSpectrum()) return void();
     
     cout << "Press any key to start" << endl;
-
+    
     WaitForInput();
+    
+    
+    Print("Ready...\n", 9);
+    Print("GO!!!\n", 6);
+    
+    song::reset();
     
     start_time = clock();
     thread print(PrintScreen);
-    thread listen(ListenKeys);
-    print.join();
-    listen.join();
+    thread check(CheckKeys);
+    print.join(); check.join();
     
-    cout << endl;
+    cout << "-----------------------------------------------";
+    cout << "Ended" << endl;
     cout << "Press any key return to the main menu" << endl;
     WaitForInput();
+    ClearScreen();
 }
 
-void ListenKeys()
+void song::reset()
+{
+    now_note = 0;
+    can_seen = 0;
+    perfect_tot = 0;
+    great_tot = 0;
+    miss_tot = 0;
+}
+
+void CheckKeys()
 {
     now_note = 1;
     while(now_note <= note_cnt)
@@ -133,7 +140,6 @@ void PrintScreen()
     ClearScreen();
     cout << "Perfect\t\tGood\t\tMiss" << endl;
     cout << (int)perfect_tot << "\t\t" << (int)great_tot << "\t\t" << (int)miss_tot << endl;
-    cout << "Ended";
 }
 
 // 0: Miss, 1: Perfect, 2: Great, 3: Far, 4: Cannot See
@@ -141,12 +147,11 @@ int note::GetState()
 {
     int now_time = NowTime();
     if(now_time-time > Great) return 0;
-    else if(abs(now_time-time)<=Prefect) return 1;
-    else if(abs(now_time-time)<=Great) return 2;
-    else if(time-now_time<=FallTime) return 3;
+    else if(abs(now_time-time) <= Prefect) return 1;
+    else if(abs(now_time-time) <= Great) return 2;
+    else if(time-now_time <= FallTime) return 3;
     else return 4;
 }
-
 
 bool LoadSpectrum()
 {
@@ -168,22 +173,6 @@ bool LoadSpectrum()
     Sleep(OneSecond);
     ClearScreen();
     return true;
-}
-
-void ClearScreen()
-{
-	COORD coordScreen = {0, 0};
-	DWORD cCharsWritten;
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	DWORD dwConSize;
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);    
-    
-	GetConsoleScreenBufferInfo(hConsole, &csbi);
-	dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
-	FillConsoleOutputCharacter(hConsole, TEXT(' '), dwConSize, coordScreen, &cCharsWritten);
-	GetConsoleScreenBufferInfo(hConsole, &csbi);
-	FillConsoleOutputAttribute(hConsole, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten);
-	SetConsoleCursorPosition(hConsole, coordScreen);
 }
 
 int NowTime()
