@@ -4,17 +4,19 @@ __    __     _____     __         ______
 \ \ \-./\ \  \ \ \/\ \ \ \ \____  \ \  _-/ 
  \ \_\ \ \_\  \ \____-  \ \_____\  \ \_\   
   \/_/  \/_/   \/____/   \/_____/   \/_/   
-version: v0.04
+version: v0.05
 */
 
 #include "header.cpp"
 #include "player.cpp"
 #include "settings.cpp"
 #include "recorder.cpp"
+#include "Music.cpp"
 using namespace std;
 
 int main()
 {   
+    ClearScreen();
     Setting.CheckFiles();
     Setting.Load();
     while(true)
@@ -23,8 +25,9 @@ int main()
         cout << "===============================MDLP Main Menu=============================" << endl;
         cout << "1. Play(p)" << endl;
         cout << "2. Record(r)" << endl;
-        cout << "3. Settings(s)" << endl;
-        cout << "4. Quit(q)" << endl;
+        cout << "3. Music(m)" <<endl;
+        cout << "4. Settings(s)" << endl;
+        cout << "5. Quit(q)" << endl;
         cout << "==========================================================================" << endl;
         
         char c = WaitForInput();
@@ -32,6 +35,7 @@ int main()
         {
             case 'p': case 'P': PlayerMain(); break;
             case 'r': case 'R': RecordMain(); break;
+            case 'm': case 'M': Music.MusicMain(); break;
             case 's': case 'S': Setting.SettingsMain(); break;
             case 'q': case 'Q': goto end;
         }

@@ -79,7 +79,8 @@ void SETTING::SettingsMain(){
 
 void SETTING::Load(){
     
-    Print("Loading...",20);
+    ClearScreen();
+    Print("Loading...\n",20);
     FILE* fr = fopen("data/settings.laf","r");
     fscanf(fr,"%c %c %c %c", &key[0], &key[1], &key[2], &key[3]);
     fclose(fr);
