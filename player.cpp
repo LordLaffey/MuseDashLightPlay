@@ -163,7 +163,8 @@ bool LoadSpectrum(FILE* fr)
         return false;
     }
     
-    fscanf(fr, "%d", &note_cnt);
+    int tmp;
+    fscanf(fr, "%d %d", &note_cnt, &tmp);
     for(int i = 1; i <= note_cnt; i++)
         fscanf(fr, "%d %d", &note[i].time, &note[i].line);
     
