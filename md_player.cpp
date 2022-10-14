@@ -89,7 +89,7 @@ void MDPrintScreen()
             const Track &t = track[i];
             for(int j = t.now_note; j < t.can_seen; j++)
             {
-                int pos = MD_Speed * (t.note[j]-NowTime()) + 2;
+                int pos = MDSpeed * (t.note[j]-NowTime()) + 2;
                 if(pos > 0 and pos <= 47) output[i][pos] = '<';
             }
         }

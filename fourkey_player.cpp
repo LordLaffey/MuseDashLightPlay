@@ -4,7 +4,7 @@
  * @version v0.1
  * @date 2022-10-13
  */
-
+ 
 #include "header.cpp"
 #include "settings.cpp"
 #include "Music.cpp"
@@ -50,7 +50,8 @@ void FourKeyPlayerMain()
     check2.join();
     check3.join();
     check4.join();
-    
+
+    Sleep(OneSecond);
     ClearScreen();
     cout << "----------------------------" << endl;
     cout << "Ended" <<endl;
@@ -104,7 +105,7 @@ void FourkeyPrintScreen()
             const Track &t = track[i];
             for(int j = t.now_note; j < t.can_seen; j++)
             {
-                int pos = 15-Xkey_Speed * (t.note[j] - NowTime());
+                int pos = 15-FourKeySpeed * (t.note[j] - NowTime());
                 if(pos < 0 || pos > 15) continue;
                 output[pos][(i-1)*8+1] = 'x';
                 output[pos][(i-1)*8+2] = 'x';

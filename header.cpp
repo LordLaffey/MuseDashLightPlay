@@ -21,11 +21,12 @@ using namespace std;
 
 const int OneSecond = 1000;
 
-const int FallTime = 1500;
+const int MDFallTime = 1500;
+const int FourKeyFallTime = 1000;
 const int Columns = 45;
 const int Lines = 15;
-const double MD_Speed = (double)Columns / FallTime;
-const double Xkey_Speed = (double)Lines / FallTime;
+const double MDSpeed = (double)Columns / MDFallTime;
+const double FourKeySpeed = (double)Lines / FourKeyFallTime;
 
 
 int start_time;

@@ -172,7 +172,7 @@ namespace song {
         else if(abs(now_time-x) <= Prefect) return 1;
         else if(abs(now_time-x) <= Great) return 2;
         else if(abs(now_time-x) <= Bad) return 3;
-        else if(x-now_time <= FallTime) return 4;
+        else if(x-now_time <= MDFallTime) return 4;
         else return 5;
     }
     
