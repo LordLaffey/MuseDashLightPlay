@@ -19,7 +19,7 @@ using namespace std;
 void PlayMain();
 
 int main()
-{   
+{
     ClearScreen();
     setting.load();
     Music.MusicPrework();
