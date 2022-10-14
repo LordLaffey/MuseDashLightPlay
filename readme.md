@@ -4,7 +4,7 @@
 
 Muse Dash Light Play - 一款基于控制台的简约版音游。
 
-版本：v1.00
+版本：v1.01
 
 界面：
 
@@ -39,6 +39,8 @@ v0.04 将 settings 独立进 `main.cpp` 中。
 v0.05 增加谱面列表，支持自定义键位与键数。
 
 v1.00 **增加了 4Key 模式**。
+
+v1.01 隐藏了光标。
 
 ### musedash player
 
