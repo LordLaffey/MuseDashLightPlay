@@ -20,6 +20,8 @@ Perfect         Bad             Miss
 使用方法：编译运行 `main.exe`
 
 > 如果在游玩时出现程序异常结束的问题，请检查编译选项中是否开了 `optimize` 优化，如果有，请删除。
+>
+> 4Key 模式的谱子可以使用 recorder 录制或使用 tools 中的 osu2rbq 将 osu 谱面转为 MDLP 谱面。
 
 欢迎游玩，提出建议，或做出贡献（提交 Issues 和 PRs），万分感激 >w<。
 
@@ -36,14 +38,25 @@ v0.04 将 settings 独立进 `main.cpp` 中。
 
 v0.05 增加谱面列表，支持自定义键位与键数。
 
+v1.00 **增加了 4Key 模式**。
+
 ### musedash player
 
 v0.04 增加了选曲界面。
 
+v0.05 兼容了 4Key 模式。
+
+### 4Key player
+
+v0.01 基于 4+1 线程，所以如果 CPU 是四核的话会出现打印较慢的情况，敬请期待 v0.02 版本。
+
 ### recorder:
+
 v1.11 支持 record 多个谱面。
 
 v1.12 修复了 record 谱面后没有立即加载的 bug。
+
+v1.13 兼容了 4Key 录制。
 
 ## TODO
 
