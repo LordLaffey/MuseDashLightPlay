@@ -39,7 +39,7 @@ void FourKeyPlayerMain()
     Print("Ready...\n", 9);
     Print("GO!!!\n", 6);
     
-    start_time = 0;
+    start_time = clock();
     thread print(FourkeyPrintScreen);
     thread check1(XkeyCheckKeys<1>);
     thread check2(XkeyCheckKeys<2>);
@@ -50,6 +50,8 @@ void FourKeyPlayerMain()
     check2.join();
     check3.join();
     check4.join();
+    
+    ClearScreen();
     cout << "----------------------------" << endl;
     cout << "Ended" <<endl;
     cout << "Press any key return to the main menu" << endl;
