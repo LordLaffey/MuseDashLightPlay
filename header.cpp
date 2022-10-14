@@ -5,6 +5,7 @@
 #define _MDLP_HEADER
 
 #include <atomic>
+#include <cassert>
 #include <conio.h>
 #include <cstring>
 #include <iostream>
@@ -19,6 +20,19 @@
 using namespace std;
 
 const int OneSecond = 1000;
+
+const int FallTime = 1500;
+const int Columns = 45;
+const int Lines = 30;
+const double MD_Speed = (double)Columns / FallTime;
+const double Xkey_Speed = (double)Lines / FallTime;
+
+
+int start_time;
+int NowTime()
+{
+    return clock()-start_time;
+}
 
 char lower(char c)
 {
