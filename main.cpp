@@ -10,6 +10,7 @@
 
 #include "header.cpp"
 #include "md_player.cpp"
+#include "fourkey_player.cpp"
 #include "settings.cpp"
 #include "recorder.cpp"
 using namespace std;
@@ -64,7 +65,7 @@ void PlayMain(){
         char c=_getch();
         switch(c){
             case '1': MDPlayerMain();return ;
-            case '2': MDPlayerMain();return ;
+            case '2': FourKeyPlayerMain();return ;
             case '3': return ;
         }
     }

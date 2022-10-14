@@ -23,7 +23,7 @@ const int OneSecond = 1000;
 
 const int FallTime = 1500;
 const int Columns = 45;
-const int Lines = 30;
+const int Lines = 15;
 const double MD_Speed = (double)Columns / FallTime;
 const double Xkey_Speed = (double)Lines / FallTime;
 
@@ -39,19 +39,14 @@ char lower(char c)
     return (c>=65 and c<=90) ? c+32 : c;
 }
 
-void Print(string s,int times)
+void Print(string s, int times)
 {
-    for(auto v:s)
+    for(auto v : s)
     {
-        cout<<v;
-        if(_kbhit())
-        {
-            char c=_getch();
-            times = INT_MAX;
-        }
+        cout << v;
+        if(_kbhit()) times = INT_MAX;
         Sleep(OneSecond/times);
     }
-
 }
 
 char WaitForInput()
@@ -60,7 +55,7 @@ char WaitForInput()
     while(true)
     {
         if(!_kbhit()) continue;
-        else { ch = _getch();break; }
+        else { ch = _getch(); break; }
     }
     return ch;
 }

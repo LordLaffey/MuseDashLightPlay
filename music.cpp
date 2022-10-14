@@ -97,30 +97,29 @@ void Music::PrintList(int type)
     printf("===================================================\n");
 }
 
+// type = [1: MuseDash Mode | 2: 4K Mode]
 FILE *Music::ChooseMusic(int type)
 {
-
-begin:
+    begin:
     ClearScreen();
     PrintList(type);
-
+    
     type--;
     puts("Choose a music:");
-
-    int id;
-    cin >> id;
-
+    
+    int id; cin >> id;
+    
     if(id > list[type].size())
     {
         puts("Invalid ID!");
         Sleep(OneSecond);
         goto begin;
     }
-
+    
     string type_name = type == 0 ? "MuseDashMode" : "4KMode";
     string path = ".\\data\\music\\";
     path += type_name + "\\" + list[type][id - 1].second;
-
+    
     return fopen(path.data(), "r");
 }
 
@@ -130,33 +129,14 @@ namespace song {
     const int Bad = 250;
     
     int note_cnt;
-    atomic<int> now_note, can_seen;
+    atomic<int> now_note;
     atomic<int> perfect_tot, good_tot, bad_tot, miss_tot;
-    struct note
-    {
+    struct note {
         int time, line;
-        // 0: Miss, 1: Perfect, 2: Great, 3: Bad, 4: Far, 5: Cannot See
-        int GetState()
-        {
-            int now_time = NowTime();
-            if(now_time - time > Bad)
-                return 0;
-            else if(abs(now_time - time) <= Prefect)
-                return 1;
-            else if(abs(now_time - time) <= Great)
-                return 2;
-            else if(abs(now_time - time) <= Bad)
-                return 3;
-            else if(time - now_time <= FallTime)
-                return 4;
-            else
-                return 5;
-        }
     } note[100000];
     void reset()
     {
-        now_note = 0;
-        can_seen = 0;
+        now_note = 1;
         perfect_tot = 0;
         good_tot = 0;
         miss_tot = 0;
@@ -184,16 +164,37 @@ namespace song {
         return true;
     }
     
+    // 0: Miss, 1: Perfect, 2: Great, 3: Bad, 4: Far, 5: Cannot See
+    int GetNoteState(int x)
+    {
+        int now_time = NowTime();
+        if(now_time-x > Bad) return 0;
+        else if(abs(now_time-x) <= Prefect) return 1;
+        else if(abs(now_time-x) <= Great) return 2;
+        else if(abs(now_time-x) <= Bad) return 3;
+        else if(x-now_time <= FallTime) return 4;
+        else return 5;
+    }
+    
     struct track
     {
         int note_cnt;
         atomic<int> now_note, can_seen;
-        vector<struct note> a;
+        vector<int> note;
+        void init(int id)
+        {
+            reset(); note.push_back(114514);
+            for(int i = 1; i <= song::now_note; i++)
+                if(song::note[i].line == id)
+                    note.push_back(song::note[i].time);
+            note_cnt = note.size();
+        }
         void reset()
         {
-            now_note = can_seen = 0;
+            now_note = 1;
+            can_seen = 0;
         }
     } track[5];
 }
 
-#endif// _MDLP_MUSIC
+#endif // _MDLP_MUSIC

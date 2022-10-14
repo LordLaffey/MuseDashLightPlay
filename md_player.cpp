@@ -13,13 +13,14 @@ using namespace song;
 
 char WaitForInput();
 void MDPrintScreen();
-void MDCheckKeys();
 void MDPlayerMain();
+template<int id>
+void MDCheckKeys();
 
 void MDPlayerMain()
 {
     ClearScreen();
-
+    
     FILE* file = Music.ChooseMusic(1);
     if(!LoadSpectrum(file)) return void();
     
@@ -29,11 +30,16 @@ void MDPlayerMain()
     Print("GO!!!\n", 6);
     
     song::reset();
+    track[1].init(1);
+    track[2].init(2);
     
     start_time = clock();
     thread print(MDPrintScreen);
-    thread check(MDCheckKeys);
-    print.join(); check.join();
+    thread check1(MDCheckKeys<1>);
+    thread check2(MDCheckKeys<2>);
+    print.join();
+    check1.join();
+    check2.join();
     
     cout << "-----------------------------------------------" << endl;
     cout << "Ended" << endl;
@@ -42,49 +48,50 @@ void MDPlayerMain()
     ClearScreen();
 }
 
+template<int id>
 void MDCheckKeys()
 {
-    now_note = 1;
-    while(now_note <= note_cnt)
+    struct track &t = track[id];
+    while(t.now_note <= t.note_cnt)
     {
-        while(now_note <= note_cnt && !note[now_note].GetState())
-            miss_tot++,now_note++;
-        while(can_seen <= note_cnt && note[can_seen].GetState() != 5)
-            can_seen++;
-        if(_kbhit())
+        while(t.now_note <= t.note_cnt and !GetNoteState(t.note[t.now_note]))
+            miss_tot++, t.now_note++, song::now_note++;
+        while(t.can_seen <= t.note_cnt and GetNoteState(t.note[t.can_seen]) != 5)
+            t.can_seen++;
+        if(!_kbhit()) continue;
+        char c = _getch();
+        if(GetNoteState(t.note[t.now_note]) >= 3) continue;
+        if(setting.checkKey(c) == id)
         {
-            char c = _getch();
-            if(note[now_note].GetState() >= 3)
-                continue;
-            if(setting.checkKey(c) == note[now_note].line)
+            switch(GetNoteState(t.note[t.now_note]))
             {
-                switch(note[now_note].GetState())
-                {
-                    case 1: perfect_tot++; break;
-                    case 2: good_tot++; break;
-                }
-                now_note++;
-                continue;
+                case 1: perfect_tot++; break;
+                case 2: good_tot++; break;
             }
+            t.now_note++;
+            song::now_note++;
         }
     }
-    
 }
 
 char output[3][105];
 void MDPrintScreen()
 {
-    while(now_note <= note_cnt)
+    while(song::now_note <= song::note_cnt)
     {
         ClearScreen();
         cout << "Perfect\t\tGreat\t\tMiss" << endl;
         cout << (int)perfect_tot << "\t\t" << (int)good_tot << "\t\t" << (int)miss_tot << endl;
         cout << "-----------------------------------------------" << endl;
         memset(output, 0, sizeof(output));
-        for(int i=now_note;i<=can_seen;i++)
+        for(int i = 1; i <= 2; i++)
         {
-            int pos = MD_Speed * (note[i].time-NowTime()) + 2;
-            if(pos > 0 and pos <= 47) output[note[i].line][pos] = '<';
+            struct track &t = track[i];
+            for(int j=t.now_note;j<=t.can_seen;j++)
+            {
+                int pos = MD_Speed * (t.note[j]-NowTime()) + 2;
+                if(pos > 0 and pos <= 47) output[i][pos] = '<';
+            }
         }
         for(int i = 1; i <= 47; i++)
         {
@@ -105,10 +112,6 @@ void MDPrintScreen()
     cout << "Perfect\t\tGreat\t\tMiss" << endl;
     cout << (int)perfect_tot << "\t\t" << (int)good_tot << "\t\t" << (int)miss_tot << endl;
 }
-
-
-
-
 
 /*
 Perfect         Bad             Miss
