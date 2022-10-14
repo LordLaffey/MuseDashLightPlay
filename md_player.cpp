@@ -16,6 +16,7 @@ void MDPrintScreen();
 void MDPlayerMain();
 void MDCheckKeys();
 
+atomic<bool> md_quit_flag;
 void MDPlayerMain()
 {
     ClearScreen();
@@ -31,6 +32,7 @@ void MDPlayerMain()
     song::reset();
     track[1].init(1);
     track[2].init(2);
+    md_quit_flag = false;
     
     start_time = clock();
     thread print(MDPrintScreen);
@@ -41,7 +43,6 @@ void MDPlayerMain()
     ClearScreen();
 }
 
-atomic<bool> md_quit_flag;
 void MDCheckKeys()
 {
     while(song::now_note <= song::note_cnt)
