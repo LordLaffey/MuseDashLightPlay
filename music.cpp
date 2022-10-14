@@ -155,7 +155,7 @@ namespace song {
         int tmp,type;
         fscanf(fr, "%d %d %d", &note_cnt, &tmp, &type);
         for(int i = 1; i <= note_cnt; i++)
-            fscanf(fr, "%d", &note[i].time);
+            fscanf(fr, "%d %d", &note[i].time, &note[i].line);
         
         fclose(fr);
         cout << "Spectrum loaded!" << endl;
@@ -176,7 +176,7 @@ namespace song {
         else return 5;
     }
     
-    struct track
+    struct Track
     {
         int note_cnt;
         atomic<int> now_note, can_seen;
@@ -184,7 +184,7 @@ namespace song {
         void init(int id)
         {
             reset(); note.push_back(114514);
-            for(int i = 1; i <= song::now_note; i++)
+            for(int i = 1; i <= song::note_cnt; i++)
                 if(song::note[i].line == id)
                     note.push_back(song::note[i].time);
             note_cnt = note.size();

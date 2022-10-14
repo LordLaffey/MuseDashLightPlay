@@ -50,16 +50,16 @@ int main()
     Print("Thanks for playing MDLP  >w<", 20);
 }
 
-void PlayMain(){
-
+void PlayMain()
+{
     ClearScreen();
-
+    
     cout << "Choose a mode:" << endl;
     cout << "1. MuseDash Mode" << endl;
     cout << "2. 4K Mode" << endl;
     cout << "3. Back" << endl;
-
-    while(1)
+    
+    while(true)
     {
         if(!_kbhit()) continue;
         char c=_getch();
@@ -69,5 +69,5 @@ void PlayMain(){
             case '3': return ;
         }
     }
-
+    
 }

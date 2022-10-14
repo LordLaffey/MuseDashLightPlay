@@ -51,7 +51,7 @@ void MDPlayerMain()
 template<int id>
 void MDCheckKeys()
 {
-    struct track &t = track[id];
+    Track &t = track[id];
     while(t.now_note <= t.note_cnt)
     {
         while(t.now_note <= t.note_cnt and !GetNoteState(t.note[t.now_note]))
@@ -86,7 +86,7 @@ void MDPrintScreen()
         memset(output, 0, sizeof(output));
         for(int i = 1; i <= 2; i++)
         {
-            struct track &t = track[i];
+            Track &t = track[i];
             for(int j=t.now_note;j<=t.can_seen;j++)
             {
                 int pos = MD_Speed * (t.note[j]-NowTime()) + 2;
