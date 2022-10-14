@@ -5,6 +5,7 @@
 #define _MDLP_HEADER
 
 #include <atomic>
+#include <cassert>
 #include <conio.h>
 #include <cstring>
 #include <iostream>
@@ -20,24 +21,33 @@ using namespace std;
 
 const int OneSecond = 1000;
 
+const int MDFallTime = 1500;
+const int FourKeyFallTime = 1000;
+const int Columns = 45;
+const int Lines = 15;
+const double MDSpeed = (double)Columns / MDFallTime;
+const double FourKeySpeed = (double)Lines / FourKeyFallTime;
+
+
+int start_time;
+int NowTime()
+{
+    return clock()-start_time;
+}
+
 char lower(char c)
 {
     return (c>=65 and c<=90) ? c+32 : c;
 }
 
-void Print(string s,int times)
+void Print(string s, int times)
 {
-    for(auto v:s)
+    for(auto v : s)
     {
-        cout<<v;
-        if(_kbhit())
-        {
-            char c=_getch();
-            times = INT_MAX;
-        }
+        cout << v;
+        if(_kbhit()) times = INT_MAX;
         Sleep(OneSecond/times);
     }
-
 }
 
 char WaitForInput()
@@ -46,7 +56,7 @@ char WaitForInput()
     while(true)
     {
         if(!_kbhit()) continue;
-        else { ch = _getch();break; }
+        else { ch = _getch(); break; }
     }
     return ch;
 }

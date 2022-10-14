@@ -5,20 +5,24 @@
  *  \ \_\ \ \_\  \ \____-  \ \_____\  \ \_\   
  *   \/_/  \/_/   \/____/   \/_____/   \/_/   
  * 
- * @version v0.05 
+ * @version v0.06
+ * @date 2022/10/14
 */
 
 #include "header.cpp"
-#include "player.cpp"
+#include "md_player.cpp"
+#include "fourkey_player.cpp"
 #include "settings.cpp"
 #include "recorder.cpp"
 using namespace std;
 
+void PlayMain();
+
 int main()
-{   
+{
     ClearScreen();
     setting.load();
-    Music.Load();
+    Music.MusicPrework();
     while(true)
     {
         ClearScreen();
@@ -33,7 +37,7 @@ int main()
         char c = WaitForInput();
         switch(c)
         {
-            case 'p': case 'P': PlayerMain(); break;
+            case 'p': case 'P': PlayMain(); break;
             case 'r': case 'R': RecordMain(); break;
             case 'm': case 'M': Music.MusicMain(); break;
             case 's': case 'S': SettingsMain(); break;
@@ -45,4 +49,26 @@ int main()
     
     ClearScreen();
     Print("Thanks for playing MDLP  >w<", 20);
+}
+
+void PlayMain()
+{
+    ClearScreen();
+    
+    cout << "Choose a mode:" << endl;
+    cout << "1. MuseDash Mode" << endl;
+    cout << "2. 4K Mode" << endl;
+    cout << "3. Back" << endl;
+    
+    while(true)
+    {
+        if(!_kbhit()) continue;
+        char c = _getch();
+        switch(c)
+        {
+            case '1': MDPlayerMain(); return void();
+            case '2': FourKeyPlayerMain(); return void();
+            case '3': return void();
+        }
+    }
 }
