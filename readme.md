@@ -6,6 +6,8 @@
 
 Muse Dash Light Play - 一款基于控制台的简约版音游。
 
+版本：v1.00
+
 界面：
 
 ```
@@ -62,9 +64,9 @@ v1.13 兼容了 4Key 录制。
 
 最后更新于 2022-10-13 20:53
 
-- [ ] key mode
+- [x] key mode
 
-- [ ] 筛选界面（musedash/xkey）
+- [x] 筛选界面（musedash/xkey）
 
 - [ ] 完善谱面信息
 
