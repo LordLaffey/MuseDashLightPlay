@@ -143,6 +143,7 @@ namespace song {
     }
     bool LoadSpectrum(FILE *fr)
     {
+        reset();
         cout << "Loading spectrum..." << endl;
         Sleep(OneSecond);
         if(fr == nullptr)
