@@ -64,7 +64,7 @@ void XkeyCheckKeys()
     while(t.now_note <= t.note_cnt)
     {
         while(t.now_note <= t.note_cnt and !GetNoteState(t.note[t.now_note]))
-            miss_tot++, t.now_note++;
+            miss_tot++, t.now_note++, song::now_note++;
         while(t.can_seen <= t.note_cnt and GetNoteState(t.note[t.can_seen]) != 5)
             t.can_seen++;
         if(GetNoteState(t.note[t.now_note]) >= 4) continue;
