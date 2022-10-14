@@ -6,6 +6,7 @@
  *   \/_/  \/_/   \/____/   \/_____/   \/_/   
  * 
  * @version v0.06
+ * @date 2022/10/14
 */
 
 #include "header.cpp"
@@ -62,12 +63,12 @@ void PlayMain()
     while(true)
     {
         if(!_kbhit()) continue;
-        char c=_getch();
-        switch(c){
-            case '1': MDPlayerMain();return ;
-            case '2': FourKeyPlayerMain();return ;
-            case '3': return ;
+        char c = _getch();
+        switch(c)
+        {
+            case '1': MDPlayerMain(); return void();
+            case '2': FourKeyPlayerMain(); return void();
+            case '3': return void();
         }
     }
-    
 }

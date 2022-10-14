@@ -187,12 +187,13 @@ namespace song {
             for(int i = 1; i <= song::note_cnt; i++)
                 if(song::note[i].line == id)
                     note.push_back(song::note[i].time);
-            note_cnt = note.size();
+            note_cnt = note.size()-1;
         }
         void reset()
         {
             now_note = 1;
-            can_seen = 0;
+            can_seen = 1;
+            note.clear();
         }
     } track[5];
 }

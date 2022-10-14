@@ -34,6 +34,11 @@ void FourKeyPlayerMain()
         track[i].init(i);
     song::reset();
     
+    cout << "Press any key to start" << endl;
+    WaitForInput();
+    Print("Ready...\n", 9);
+    Print("GO!!!\n", 6);
+    
     start_time = 0;
     thread print(FourkeyPrintScreen);
     thread check1(XkeyCheckKeys<1>);
@@ -91,11 +96,11 @@ void FourkeyPrintScreen()
         cout << (int)perfect_tot << "\t" << (int)good_tot << "\t" 
              << (int)bad_tot << "\t" << (int)miss_tot << endl;
         cout << "----------------------------" << endl;
-        memset(output,' ',sizeof(output));
+        memset(output,0,sizeof(output));
         for(int i=1;i<=4;i++)
         {
-            Track &t = track[i];
-            for(int j = t.now_note; j <= t.can_seen; j++)
+            const Track &t = track[i];
+            for(int j = t.now_note; j < t.can_seen; j++)
             {
                 int pos = 15-Xkey_Speed * (t.note[j] - NowTime());
                 if(pos < 0 || pos > 15) continue;
@@ -106,11 +111,16 @@ void FourkeyPrintScreen()
             }
         }
         for(int i=1;i<=15;i++)
+            for(int j=1;j<=30;j++)
+                if(!output[i][j]) output[i][j] = ' ';
+        
+        memset(buf, 0, sizeof(buf));
+        for(int i=1;i<=15;i++)
         {
             output[i][29]='\n';
-            strcat(buf,output[i]);
+            strcat(buf+1,output[i]+1);
         }
-        cout << buf;
+        cout << (buf+1);
         cout << "====----====----====----====\n" ;
         this_thread::sleep_for(chrono::milliseconds(20));
     }
