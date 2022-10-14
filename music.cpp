@@ -105,9 +105,11 @@ FILE *Music::ChooseMusic(int type)
     PrintList(type);
     
     type--;
-    puts("Choose a music:");
+    puts("Choose a music, input 114514 to quit:");
     
     int id; cin >> id;
+    
+    if(id == 114514) return NULL;
     
     if(id > list[type].size())
     {
