@@ -40,6 +40,10 @@ class Setting{
                 mkdir("data");
             if(access("data/music",0)==-1)
                 mkdir("data/music");
+            if(access("data/music/MuseDashMode",0)==-1)
+                mkdir("data/music/MuseDashMode");
+            if(access("data/music/4KMode",0)==-1)
+                mkdir("data/music/4KMode");
             if(access("data/settings.laf",0)==-1)
             {
                 keys={{'d',1}, {'f',1}, {'j',2}, {'k',2}};
@@ -73,6 +77,7 @@ class Setting{
 
             keys=newkeys;
             this->num=num;
+            write();
 
         }
         int getKeyNum() {
@@ -140,7 +145,7 @@ void ResetKey(){
         num=max(num, x);
     }
 
-    puts("Sure to Save?");
+    puts("Sure to Save?(y/n)");
     while(1)
     {
         if(_kbhit())
