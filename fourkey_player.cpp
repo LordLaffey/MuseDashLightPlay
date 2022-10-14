@@ -1,7 +1,7 @@
 /**
  * @file xkey_player.cpp
  * @authors LordLaffey, Ptilopsis_w
- * @version v0.1
+ * @version v0.2
  * @date 2022-10-13
  */
 
@@ -14,10 +14,9 @@ using namespace song;
 
 void FourKeyPlayerMain();
 void FourkeyPrintScreen();
-
-template<int id>
 void XkeyCheckKeys();
 
+atomic<bool> fourkey_quit_flag;
 void FourKeyPlayerMain()
 {
     ClearScreen();
@@ -41,15 +40,9 @@ void FourKeyPlayerMain()
     
     start_time = clock();
     thread print(FourkeyPrintScreen);
-    thread check1(XkeyCheckKeys<1>);
-    thread check2(XkeyCheckKeys<2>);
-    thread check3(XkeyCheckKeys<3>);
-    thread check4(XkeyCheckKeys<4>);
+    thread check(XkeyCheckKeys);
     print.join(); 
-    check1.join(); 
-    check2.join();
-    check3.join();
-    check4.join();
+    check.join();
     
     Sleep(OneSecond);
     ClearScreen();
@@ -63,30 +56,32 @@ void FourKeyPlayerMain()
     ClearScreen();
 }
 
-template<int id>
 void XkeyCheckKeys()
 {
-    Track &t = track[id];
-    while(t.now_note <= t.note_cnt)
+    while(song::now_note <= song::note_cnt)
     {
-        while(t.now_note <= t.note_cnt and !GetNoteState(t.note[t.now_note]))
-            miss_tot++, t.now_note++, song::now_note++;
-        while(t.can_seen <= t.note_cnt and GetNoteState(t.note[t.can_seen]) != 5)
-            t.can_seen++;
-        if(GetNoteState(t.note[t.now_note]) >= 4) continue;
+        for(int i=1;i<=4;i++)
+        {
+            Track &t=track[i];
+            while(t.now_note <= t.note_cnt and !GetNoteState(t.note[t.now_note]))
+                miss_tot++, t.now_note++, song::now_note++;
+            while(t.can_seen <= t.note_cnt and GetNoteState(t.note[t.can_seen]) != 5)
+                t.can_seen++;
+        }
         if(!_kbhit()) continue;
         char c = _getch();
-        if(setting.checkKey(c) == id)
+        if(c == 27) return fourkey_quit_flag=true,void();
+        int now = setting.checkKey(c);
+        Track &t=track[now];
+        if(GetNoteState(t.note[t.now_note]) >= 4) continue;
+        switch(GetNoteState(t.note[t.now_note]))
         {
-            switch(GetNoteState(t.note[t.now_note]))
-            {
-                case 1: perfect_tot++; break;
-                case 2: good_tot++; break;
-                case 3: bad_tot++; break;
-            }
-            t.now_note++;
-            song::now_note++;
+            case 1: perfect_tot++; break;
+            case 2: good_tot++; break;
+            case 3: bad_tot++; break;
         }
+        t.now_note++;
+        song::now_note++;
     }
 }
 
@@ -97,6 +92,7 @@ void FourkeyPrintScreen()
     memset(output, ' ', sizeof(output));
     while(song::now_note <= song::note_cnt)
     {
+        if(fourkey_quit_flag) return ;
         ClearScreen();
         cout << "Perfect\tGood\tBad\tMiss" << endl;
         cout << (int)perfect_tot << "\t" << (int)good_tot << "\t" 

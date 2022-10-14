@@ -1,7 +1,7 @@
 /**
  * @details The player of MDLP
  * @author Ptilosis_w, LordLaffey
- * @version v0.05
+ * @version v0.06
 */
 
 #include "header.cpp"
@@ -14,7 +14,6 @@ using namespace song;
 char WaitForInput();
 void MDPrintScreen();
 void MDPlayerMain();
-template<int id>
 void MDCheckKeys();
 
 void MDPlayerMain()
@@ -35,42 +34,39 @@ void MDPlayerMain()
     
     start_time = clock();
     thread print(MDPrintScreen);
-    thread check1(MDCheckKeys<1>);
-    thread check2(MDCheckKeys<2>);
+    thread check(MDCheckKeys);
     print.join();
-    check1.join();
-    check2.join();
-    
-    cout << "-----------------------------------------------" << endl;
-    cout << "Ended" << endl;
-    cout << "Press any key return to the main menu" << endl;
-    WaitForInput();
+    check.join();
+
     ClearScreen();
 }
 
-template<int id>
+atomic<bool> md_quit_flag;
 void MDCheckKeys()
 {
-    Track &t = track[id];
-    while(t.now_note <= t.note_cnt)
+    while(song::now_note <= song::note_cnt)
     {
-        while(t.now_note <= t.note_cnt and !GetNoteState(t.note[t.now_note]))
-            miss_tot++, t.now_note++, song::now_note++;
-        while(t.can_seen <= t.note_cnt and GetNoteState(t.note[t.can_seen]) != 5)
-            t.can_seen++;
+        for(int i=1;i<=2;i++)
+        {
+            Track &t = track[i];
+            while(t.now_note <= t.note_cnt and !GetNoteState(t.note[t.now_note]))
+                miss_tot++, t.now_note++, song::now_note++;
+            while(t.can_seen <= t.note_cnt and GetNoteState(t.note[t.can_seen]) != 5)
+                t.can_seen++;
+        }
         if(!_kbhit()) continue;
         char c = _getch();
+        if(c == 27) return md_quit_flag=true,void();
+        int now=setting.checkKey(c);
+        Track &t=track[now];
         if(GetNoteState(t.note[t.now_note]) >= 3) continue;
-        if(setting.checkKey(c) == id)
+        switch(GetNoteState(t.note[t.now_note]))
         {
-            switch(GetNoteState(t.note[t.now_note]))
-            {
-                case 1: perfect_tot++; break;
-                case 2: good_tot++; break;
-            }
-            t.now_note++;
-            song::now_note++;
+            case 1: perfect_tot++; break;
+            case 2: good_tot++; break;
         }
+        t.now_note++;
+        song::now_note++;
     }
 }
 
@@ -79,6 +75,7 @@ void MDPrintScreen()
 {
     while(song::now_note <= song::note_cnt)
     {
+        if(md_quit_flag) return ;
         ClearScreen();
         cout << "Perfect\t\tGreat\t\tMiss" << endl;
         cout << (int)perfect_tot << "\t\t" << (int)good_tot << "\t\t" << (int)miss_tot << endl;
@@ -111,6 +108,10 @@ void MDPrintScreen()
     Sleep(OneSecond);
     cout << "Perfect\t\tGreat\t\tMiss" << endl;
     cout << (int)perfect_tot << "\t\t" << (int)good_tot << "\t\t" << (int)miss_tot << endl;
+    cout << "-----------------------------------------------" << endl;
+    cout << "Ended" << endl;
+    cout << "Press any key return to the main menu" << endl;
+    WaitForInput();
 }
 
 /*
