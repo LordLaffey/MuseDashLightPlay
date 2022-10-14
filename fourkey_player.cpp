@@ -29,6 +29,7 @@ void FourKeyPlayerMain()
         return void();
     }
     
+    fourkey_quit_flag = false;
     for(int i = 1; i <= 4; i++)
         track[i].init(i);
     song::reset();
@@ -41,9 +42,9 @@ void FourKeyPlayerMain()
     start_time = clock();
     thread print(FourkeyPrintScreen);
     thread check(XkeyCheckKeys);
-    print.join(); 
+    print.join();
     check.join();
-    
+
     Sleep(OneSecond);
     ClearScreen();
     cout << "Perfect\tGood\tBad\tMiss" << endl;
@@ -54,6 +55,8 @@ void FourKeyPlayerMain()
     cout << "Press any key return to the main menu" << endl;
     WaitForInput();
     ClearScreen();
+    
+    
 }
 
 void XkeyCheckKeys()
@@ -90,6 +93,7 @@ void FourkeyPrintScreen()
     static char output[20][40];
     static char buf[1000];
     memset(output, ' ', sizeof(output));
+    Sleep(OneSecond);
     while(song::now_note <= song::note_cnt)
     {
         if(fourkey_quit_flag) return ;
