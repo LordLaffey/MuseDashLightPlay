@@ -5,8 +5,8 @@
  *  \ \_\ \ \_\  \ \____-  \ \_____\  \ \_\   
  *   \/_/  \/_/   \/____/   \/_____/   \/_/   
  * 
- * @version v1.00
- * @date 2022/10/14
+ * @version v1.01
+ * @date 2022/10/15
 */
 
 #include "header.cpp"
@@ -17,9 +17,11 @@
 using namespace std;
 
 void PlayMain();
+void HideCursor();
 
 int main()
 {
+    HideCursor();
     ClearScreen();
     setting.load();
     Music.MusicPrework();
@@ -71,4 +73,13 @@ void PlayMain()
             case '3': return void();
         }
     }
+}
+
+void HideCursor()
+{
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO CursorInfo;
+	GetConsoleCursorInfo(handle, &CursorInfo);
+	CursorInfo.bVisible = false;
+	SetConsoleCursorInfo(handle, &CursorInfo);
 }
