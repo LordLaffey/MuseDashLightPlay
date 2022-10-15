@@ -1,7 +1,8 @@
 /**
  * @details The player of MDLP
  * @author Ptilosis_w, LordLaffey
- * @version v0.06
+ * @version v1.00
+ * @date 2022-10-15
 */
 
 #include "include/console.h"
@@ -79,6 +80,7 @@ void MDCheckKeys()
         char c = _getch();
         if(c == 27) return md_quit_flag=true,void();
         int now=setting.checkKey(c);
+        if(now==-1) continue;
         Track &t=track[now];
         if(GetNoteState(t.note[t.now_note]) >= 3) continue;
         switch(GetNoteState(t.note[t.now_note]))
