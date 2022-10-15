@@ -39,14 +39,15 @@ void FourKeyPlayerMain()
     WaitForInput();
     Print("Ready...\n", 9);
     Print("GO!!!\n", 6);
-    
+
+    con.open();
     start_time = clock();
     thread print(FourkeyPrintScreen);
     thread check(XkeyCheckKeys);
     print.join();
     check.join();
-
     
+    con.close();    
 
     Sleep(OneSecond);
     ClearScreen();
@@ -55,8 +56,15 @@ void FourKeyPlayerMain()
         << (int)bad_tot << "\t" << (int)miss_tot << endl;
     cout << "----------------------------" << endl;
     cout << "Ended" <<endl;
-    cout << "Press any key return to the main menu" << endl;
-    WaitForInput();
+    cout << "Press 'q' to return to the main menu" << endl;
+    
+    while(1)
+    {
+        if(!_kbhit()) continue;
+        char c = _getch();
+        if(c == 'q') break;
+    }
+    
     ClearScreen();
 
 }
@@ -100,10 +108,10 @@ void FourkeyPrintScreen()
     {
         if(fourkey_quit_flag) return ;
         ClearScreen();
-        cout << "Perfect\tGood\tBad\tMiss" << endl;
-        cout << (int)perfect_tot << "\t" << (int)good_tot << "\t" 
+        con << "Perfect\tGood\tBad\tMiss" << endl;
+        con << (int)perfect_tot << "\t" << (int)good_tot << "\t" 
              << (int)bad_tot << "\t" << (int)miss_tot << endl;
-        cout << "----------------------------" << endl;
+        con << "----------------------------" << endl;
         memset(output, 0, sizeof(output));
         for(int i = 1; i <= 4; i++)
         {
@@ -128,8 +136,8 @@ void FourkeyPrintScreen()
             output[i][29] = '\n';
             strcat(buf+1, output[i]+1);
         }
-        cout << (buf+1);
-        cout << "====----====----====----====" << endl;
+        con << (buf+1);
+        con << "====----====----====----====" << endl;
         con.update();
         this_thread::sleep_for(chrono::milliseconds(20));
     }

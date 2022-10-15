@@ -59,7 +59,6 @@ private:
         dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
         FillConsoleOutputCharacter(handle, TEXT(' '), dwConSize, coordScreen, &cCharsWritten);
         GetConsoleScreenBufferInfo(handle, &csbi);
-        FillConsoleOutputAttribute(handle, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten);
         SetConsoleCursorPosition(handle, coordScreen);
     }
 public:

@@ -70,7 +70,6 @@ static void ClearScreen()
 	dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
 	FillConsoleOutputCharacter(hConsole, TEXT(' '), dwConSize, coordScreen, &cCharsWritten);
 	GetConsoleScreenBufferInfo(hConsole, &csbi);
-	FillConsoleOutputAttribute(hConsole, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten);
 	SetConsoleCursorPosition(hConsole, coordScreen);
 }
 

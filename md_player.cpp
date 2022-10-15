@@ -8,6 +8,7 @@
 #include "include/header.h"
 #include "music.cpp"
 #include "settings.cpp"
+#include <conio.h>
 
 using namespace std;
 using namespace song;
@@ -26,7 +27,6 @@ void MDPlayerMain()
     if(!LoadSpectrum(file)) return void();
     
     cout << "Press any key to start" << endl;
-    con.update();
     WaitForInput();
     Print("Ready...\n", 9);
     Print("GO!!!\n", 6);
@@ -35,13 +35,31 @@ void MDPlayerMain()
     track[1].init(1);
     track[2].init(2);
     md_quit_flag = false;
-    
+    con.open();
     start_time = clock();
     thread print(MDPrintScreen);
     thread check(MDCheckKeys);
     print.join();
     check.join();
 
+    con.close();
+    
+    ClearScreen();
+    
+    Sleep(OneSecond);
+    cout << "-----------------------------------------------" << endl;
+    cout << "Perfect\t\tGreat\t\tMiss" << endl;
+    cout << (int)perfect_tot << "\t\t" << (int)good_tot << "\t\t" << (int)miss_tot << endl;
+    cout << "-----------------------------------------------" << endl;
+    cout << "Ended" << endl;
+    cout << "Press 'q' to return to the main menu" << endl;
+    while(1)
+    {
+        if(!_kbhit()) continue;
+        char c = _getch();
+        if(c == 'q') break;
+    }
+    
     ClearScreen();
 }
 
@@ -79,10 +97,9 @@ void MDPrintScreen()
     while(song::now_note <= song::note_cnt)
     {
         if(md_quit_flag) return ;
-        ClearScreen();
-        cout << "Perfect\t\tGreat\t\tMiss" << endl;
-        cout << (int)perfect_tot << "\t\t" << (int)good_tot << "\t\t" << (int)miss_tot << endl;
-        cout << "-----------------------------------------------" << endl;
+        con << "Perfect\t\tGreat\t\tMiss" << endl;
+        con << (int)perfect_tot << "\t\t" << (int)good_tot << "\t\t" << (int)miss_tot << endl;
+        con << "-----------------------------------------------" << endl;
         memset(output, 0, sizeof(output));
         for(int i = 1; i <= 2; i++)
         {
@@ -102,20 +119,12 @@ void MDPrintScreen()
         output[1][1] = output[2][1] = '(';
         output[1][2] = output[2][2] = ')';
         strcat(output[1]+1, output[2]+1);
-        cout << output[1]+1;
-        cout << "===============================================" << endl;
+        con << output[1]+1;
+        con << "===============================================" << endl;
         
         con.update();
         this_thread::sleep_for(chrono::milliseconds(20));
     }
-    ClearScreen();
-    Sleep(OneSecond);
-    cout << "Perfect\t\tGreat\t\tMiss" << endl;
-    cout << (int)perfect_tot << "\t\t" << (int)good_tot << "\t\t" << (int)miss_tot << endl;
-    cout << "-----------------------------------------------" << endl;
-    cout << "Ended" << endl;
-    cout << "Press any key return to the main menu" << endl;
-    WaitForInput();
 }
 
 /*
