@@ -35,7 +35,7 @@ void RecordMain()
         cout << "2. About(a)" << endl;
         cout << "3. Exit(q)" << endl;
         cout << "==========================================================================" << endl;
-        con.update();
+        
         char c = WaitForInput();
         switch(c)
         {
