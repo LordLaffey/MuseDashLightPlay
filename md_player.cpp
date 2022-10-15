@@ -5,11 +5,12 @@
  * @date 2022-10-15
 */
 
+#include <vector>
+#include <thread>
 #include "include/console.h"
 #include "include/header.h"
 #include "music.cpp"
 #include "settings.cpp"
-#include <conio.h>
 
 using namespace std;
 using namespace song;

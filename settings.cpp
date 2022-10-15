@@ -1,6 +1,8 @@
 #ifndef _MDLP_SETTING
 #define _MDLP_SETTING
 
+#include <vector>
+#include <set>
 #include "include/header.h"
 
 using namespace std;

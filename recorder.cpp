@@ -4,16 +4,15 @@
  * @version v1.13
  */
 
-#include "include/header.h"
 #include "include/console.h"
-#include "music.cpp"
+#include "include/header.h"
 #include "settings.cpp"
+#include "music.cpp"
 
 using namespace std;
 
 void About();
 void Help();
-bool PreExit();
 void Record();
 void RecordMain();
 void Save(string name, int cnt, int len, int type);
@@ -21,10 +20,6 @@ void Save(string name, int cnt, int len, int type);
 void RecordMain()
 {
 
-    ClearScreen();
-    Sleep(OneSecond/5);
-    cout << "\nPress any key to continue..." << endl;
-    WaitForInput();
     ClearScreen();
     
     while(true)
@@ -37,11 +32,11 @@ void RecordMain()
         cout << "==========================================================================" << endl;
         
         char c = WaitForInput();
-        switch(c)
+        switch(lower(c))
         {
-            case 's': case 'S': Record(); break;
-            case 'a': case 'A': About(); break;
-            case 'q': case 'Q': return void(); break;
+            case 's': Record(); break;
+            case 'a': About(); break;
+            case 'q': case 27: return void(); break;
             default: break;
         }
     }
@@ -49,36 +44,20 @@ void RecordMain()
 
 void About()
 {
-    begin:
     ClearScreen();
     Print("This is a project to record the Spectrum of MuseDashLightPlay.\n", 20);
     Print("This program is written by C++.\n", 20);
     Print("And it is coded by LingChen, LordLaffey and Ptilopsis_w.\n", 20);
     Print("You can contact us by github:@LordLaffey, @qingchenling, @Ptilopsis_w.\n", 20);
-    
-    if(PreExit()) return void();
-    else goto begin;
+    WaitForInput();
 }
 
 void Help()
 {
-    begin:
     ClearScreen();
     setting.printKey();
     Sleep(OneSecond/10);
-    if(PreExit()) return void();
-    else goto begin;
-}
-
-bool PreExit()
-{
-    puts("Press 'q' to quit...");
-    
-    char c = WaitForInput();
-    if(c == 'q' or c == 'Q')
-        return true;
-    else
-        return false;
+    WaitForInput();
 }
 
 void Save(string name, int cnt, int len, int type)

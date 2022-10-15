@@ -5,6 +5,7 @@
  * @date 2022-10-15
  */
 
+#include <thread>
 #include "include/header.h"
 #include "include/console.h"
 #include "settings.cpp"

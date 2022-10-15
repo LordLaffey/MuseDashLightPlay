@@ -17,6 +17,7 @@ using namespace std;
 
 void PlayMain();
 void HideCursor();
+void CheckFiles();
 
 int main()
 {
@@ -37,13 +38,13 @@ int main()
         cout << "==========================================================================" << endl;
         
         char c = WaitForInput();
-        switch(c)
+        switch(lower(c))
         {
-            case 'p': case 'P': PlayMain(); break;
-            case 'r': case 'R': RecordMain(); break;
-            case 'm': case 'M': Music.MusicMain(); break;
-            case 's': case 'S': SettingsMain(); break;
-            case 'q': case 'Q': goto end;
+            case 'p': PlayMain(); break;
+            case 'r': RecordMain(); break;
+            case 'm': Music.MusicMain(); break;
+            case 's': SettingsMain(); break;
+            case 'q': case 27: goto end;
         }
     }
     
@@ -70,7 +71,7 @@ void PlayMain()
         {
             case '1': MDPlayerMain(); return void();
             case '2': FourKeyPlayerMain(); return void();
-            case '3': return void();
+            case '3': case 27: return void();
         }
     }
 }
@@ -82,4 +83,22 @@ void HideCursor()
 	GetConsoleCursorInfo(handle, &CursorInfo);
 	CursorInfo.bVisible = false;
 	SetConsoleCursorInfo(handle, &CursorInfo);
+}
+
+void CheckFiles()
+{
+    
+    if(access("data",0) == -1)
+        mkdir("data");
+    if(access("data/music",0) == -1)
+        mkdir("data/music");
+    if(access("data/music/MuseDashMode",0) == -1)
+        mkdir("data/music/MuseDashMode");
+    if(access("data/music/4KMode",0) == -1)
+        mkdir("data/music/4KMode");
+    if(access("include/header.h",0)==-1)
+        puts("Error: 101");
+    if(access("include/double_console.h",0)==-1)
+        puts("Error: 102");
+    
 }

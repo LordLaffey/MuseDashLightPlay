@@ -1,6 +1,6 @@
-#include<vector>
-#include<cstdio>
-#include<cstring>
+#include <vector>
+#include <cstdio>
+#include <cstring>
 using namespace std;
 
 int x,y,tim,type;
