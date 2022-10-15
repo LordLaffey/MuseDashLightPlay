@@ -3,9 +3,8 @@
 
 #include <iostream>
 #include <windows.h>
-using namespace std;
 
-class outbuf : public streambuf
+class outbuf : public std::streambuf
 {
     HANDLE h;
     char bytes[1024]="error: can't cin";
@@ -29,7 +28,7 @@ protected:
         }
         return c;
     }
-    virtual streamsize xsputn(char_type const *s, streamsize count) override
+    virtual std::streamsize xsputn(char_type const *s, std::streamsize count) override
     {
         DWORD written;
         WriteConsole(h, s, count, &written, NULL);
@@ -37,7 +36,7 @@ protected:
     }
 };
 
-class Console
+class Console : public std::ostream
 {
 private:
     HANDLE out1,out2;
@@ -66,22 +65,22 @@ private:
 public:
     Console()
     {
-        out1=GetStdHandle(STD_OUTPUT_HANDLE);
+        out1=CreateConsoleScreenBuffer(GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
         out2=CreateConsoleScreenBuffer(GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
         ob1=outbuf(out1); ob2=outbuf(out2);
-        update();
         hideCur(out1); hideCur(out2);
     }
+    void open() { update(); }
     void update()
     {
-        swap(out1, out2); swap(ob1, ob2);
+        std::swap(out1, out2); std::swap(ob1, ob2);
         SetConsoleActiveScreenBuffer(out1);
-        cout.rdbuf(&ob2); cin.rdbuf(&ob1);
-        cls(out2);
+        rdbuf(&ob2); cls(out2);
     }
-    ~Console() { CloseHandle(out2); }
+    void close() { SetConsoleActiveScreenBuffer(GetStdHandle(STD_OUTPUT_HANDLE)); }
+    ~Console() { CloseHandle(out1); CloseHandle(out2); }
 };
 
-static Console console;
+static Console con;
 
 #endif // _CONSOLE

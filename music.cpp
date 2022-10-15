@@ -2,6 +2,7 @@
 #define _MDLP_MUSIC
 
 #include "include/header.h"
+using namespace std;
 
 class Music
 {

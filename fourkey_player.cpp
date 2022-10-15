@@ -46,6 +46,8 @@ void FourKeyPlayerMain()
     print.join();
     check.join();
 
+    
+
     Sleep(OneSecond);
     ClearScreen();
     cout << "Perfect\tGood\tBad\tMiss" << endl;
@@ -128,7 +130,7 @@ void FourkeyPrintScreen()
         }
         cout << (buf+1);
         cout << "====----====----====----====" << endl;
-        console.update();
+        con.update();
         this_thread::sleep_for(chrono::milliseconds(20));
     }
     

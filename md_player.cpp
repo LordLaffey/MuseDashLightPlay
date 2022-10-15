@@ -26,6 +26,7 @@ void MDPlayerMain()
     if(!LoadSpectrum(file)) return void();
     
     cout << "Press any key to start" << endl;
+    con.update();
     WaitForInput();
     Print("Ready...\n", 9);
     Print("GO!!!\n", 6);
@@ -104,7 +105,7 @@ void MDPrintScreen()
         cout << output[1]+1;
         cout << "===============================================" << endl;
         
-        console.update();
+        con.update();
         this_thread::sleep_for(chrono::milliseconds(20));
     }
     ClearScreen();
