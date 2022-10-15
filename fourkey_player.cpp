@@ -1,7 +1,7 @@
 /**
  * @file xkey_player.cpp
  * @authors LordLaffey, Ptilopsis_w
- * @version v0.2
+ * @version v1.00
  * @date 2022-10-15
  */
 
@@ -85,6 +85,7 @@ void XkeyCheckKeys()
         char c = _getch();
         if(c == 27) return fourkey_quit_flag=true,void();
         int now = setting.checkKey(c);
+        if(now==-1) continue;
         Track &t=track[now];
         if(GetNoteState(t.note[t.now_note]) >= 4) continue;
         switch(GetNoteState(t.note[t.now_note]))
