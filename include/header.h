@@ -45,9 +45,6 @@ static void Print(std::string s, int times)
         if(_kbhit()) times = INT_MAX;
         Sleep(OneSecond/times);
     }
-    // cout 本身就是个 ostream 类
-    // @0c 你新定义一个流(ostream)专门用来双缓冲
-    // 我定义的
 }
 
 static char WaitForInput()

@@ -26,7 +26,7 @@ void RecordMain()
     cout << "\nPress any key to continue..." << endl;
     WaitForInput();
     ClearScreen();
-
+    
     while(true)
     {
         ClearScreen();
