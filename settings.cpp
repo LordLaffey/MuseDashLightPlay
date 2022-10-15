@@ -1,7 +1,7 @@
 #ifndef _MDLP_SETTING
 #define _MDLP_SETTING
 
-#include "header.cpp"
+#include "include/header.h"
 
 using namespace std;
 
@@ -11,7 +11,7 @@ using namespace std;
 class Setting{
     
     private:
-        vector<pair<char,int>> keys;
+        vector<pair<char,int> > keys;
         int num;
         void write()
         {
@@ -35,14 +35,6 @@ class Setting{
             ClearScreen();
             Print("Loading...\n", 20);
             
-            if(access("data",0) == -1)
-                mkdir("data");
-            if(access("data/music",0) == -1)
-                mkdir("data/music");
-            if(access("data/music/MuseDashMode",0) == -1)
-                mkdir("data/music/MuseDashMode");
-            if(access("data/music/4KMode",0) == -1)
-                mkdir("data/music/4KMode");
             if(access("data/settings.laf",0) == -1)
             {
                 keys = {{'d',1}, {'f',1}, {'j',2}, {'k',2}};

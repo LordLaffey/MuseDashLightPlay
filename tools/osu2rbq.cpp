@@ -29,7 +29,7 @@ int main()
         if(x==448) x=4;
         lis.emplace_back(tim, x);
     }
-
+    
     fprintf(fw, "%d %d %d\n", lis.size(), lis.back().first+1000, 2);
     for(pair<int,int> e : lis)
     fprintf(fw, "%d %d\n", e.first, e.second);

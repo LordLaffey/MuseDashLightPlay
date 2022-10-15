@@ -1,7 +1,7 @@
 #ifndef _MDLP_MUSIC
 #define _MDLP_MUSIC
 
-#include "header.cpp"
+#include "include/header.h"
 
 class Music
 {

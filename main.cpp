@@ -5,11 +5,10 @@
  *  \ \_\ \ \_\  \ \____-  \ \_____\  \ \_\   
  *   \/_/  \/_/   \/____/   \/_____/   \/_/   
  * 
- * @version v1.01
+ * @version v1.10
  * @date 2022/10/15
 */
-
-#include "header.cpp"
+#include "include/header.h"
 #include "md_player.cpp"
 #include "fourkey_player.cpp"
 #include "settings.cpp"
@@ -23,6 +22,7 @@ int main()
 {
     HideCursor();
     ClearScreen();
+    CheckFiles();
     setting.load();
     Music.MusicPrework();
     while(true)

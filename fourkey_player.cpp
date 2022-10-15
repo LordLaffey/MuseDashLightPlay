@@ -2,10 +2,11 @@
  * @file xkey_player.cpp
  * @authors LordLaffey, Ptilopsis_w
  * @version v0.2
- * @date 2022-10-13
+ * @date 2022-10-15
  */
 
-#include "header.cpp"
+#include "include/header.h"
+#include "include/console.h"
 #include "settings.cpp"
 #include "music.cpp"
 using namespace std;
@@ -55,8 +56,7 @@ void FourKeyPlayerMain()
     cout << "Press any key return to the main menu" << endl;
     WaitForInput();
     ClearScreen();
-    
-    
+
 }
 
 void XkeyCheckKeys()
@@ -128,6 +128,7 @@ void FourkeyPrintScreen()
         }
         cout << (buf+1);
         cout << "====----====----====----====" << endl;
+        console.update();
         this_thread::sleep_for(chrono::milliseconds(20));
     }
     

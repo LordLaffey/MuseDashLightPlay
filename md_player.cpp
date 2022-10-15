@@ -4,9 +4,10 @@
  * @version v0.06
 */
 
-#include "header.cpp"
-#include "settings.cpp"
+#include "include/console.h"
+#include "include/header.h"
 #include "music.cpp"
+#include "settings.cpp"
 
 using namespace std;
 using namespace song;
@@ -103,6 +104,7 @@ void MDPrintScreen()
         cout << output[1]+1;
         cout << "===============================================" << endl;
         
+        console.update();
         this_thread::sleep_for(chrono::milliseconds(20));
     }
     ClearScreen();

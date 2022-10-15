@@ -4,8 +4,8 @@
  * @version v1.13
  */
 
+#include "include/header.h"
 #include "music.cpp"
-#include "header.cpp"
 #include "settings.cpp"
 
 using namespace std;
