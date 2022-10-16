@@ -2,7 +2,7 @@
  * @file xkey_player.cpp
  * @authors LordLaffey, Ptilopsis_w
  * @version v1.00
- * @date 2022-10-15
+ * @date 2022-10-16
  */
 
 #include <thread>
@@ -105,7 +105,6 @@ void FourkeyPrintScreen()
     static char output[20][40];
     static char buf[1000];
     memset(output, ' ', sizeof(output));
-    Sleep(OneSecond);
     while(song::now_note <= song::note_cnt)
     {
         if(fourkey_quit_flag) return ;
