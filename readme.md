@@ -25,6 +25,8 @@ Perfect         Bad             Miss
 
 欢迎游玩，提出建议，或做出贡献（提交 Issues 和 PRs），万分感激 >w<。
 
+谱面可以从 [MDLPSongs: MDLP 谱面社区](https://github.com/qingchenling/MDLPSongs) 获取。
+
 ## 特性
 
 - **体积轻小** - 使用不到 20KB 的 C++ 代码完成，可以随时编译运行。基于控制台输出，可以兼容大多数环境。
