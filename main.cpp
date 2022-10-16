@@ -52,6 +52,8 @@ int main()
     
     ClearScreen();
     Print("Thanks for playing MDLP  >w<", 20);
+    Sleep(1000);
+    ClearScreen();
 }
 
 void PlayMain()
@@ -87,7 +89,6 @@ void HideCursor()
 
 void CheckFiles()
 {
-    
     if(access("data",0) == -1)
         mkdir("data");
     if(access("data/music",0) == -1)
@@ -100,5 +101,4 @@ void CheckFiles()
         puts("Error: 101");
     if(access("include/double_console.h",0)==-1)
         puts("Error: 102");
-    
 }

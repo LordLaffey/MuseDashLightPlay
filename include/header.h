@@ -4,10 +4,9 @@
 #ifndef _MDLP_HEADER
 #define _MDLP_HEADER
 
+#include <bits/stdc++.h>
 #include <windows.h>
-#include <iostream>
 #include <conio.h>
-#include <atomic>
 #include <io.h>
 
 static const int OneSecond = 1000;
@@ -17,6 +16,7 @@ static const int Columns = 45;
 static const int Lines = 15;
 static const double MDSpeed = (double)Columns / MDFallTime;
 static const double FourKeySpeed = (double)Lines / FourKeyFallTime;
+static const int Status_Time = 200;
 
 static int start_time;
 static int NowTime()
