@@ -1,7 +1,7 @@
 /**
  * @file xkey_player.cpp
  * @authors LordLaffey, Ptilopsis_w
- * @version v1.00
+ * @version v1.01
  * @date 2022-10-16
  */
 
@@ -12,7 +12,6 @@
 #include "music.cpp"
 using namespace std;
 using namespace song;
-
 
 void FourKeyPlayerMain();
 void FourkeyPrintScreen();
@@ -47,10 +46,9 @@ void FourKeyPlayerMain()
     thread check(XkeyCheckKeys);
     print.join();
     check.join();
-    
-    con.close();    
 
-    Sleep(OneSecond);
+    con.close();
+
     ClearScreen();
     cout << "Perfect\tGood\tBad\tMiss" << endl;
     cout << (int)perfect_tot << "\t" << (int)good_tot << "\t" 

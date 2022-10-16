@@ -26,7 +26,11 @@ void MDPlayerMain()
     ClearScreen();
     
     FILE* file = Music.ChooseMusic(1);
-    if(!LoadSpectrum(file)) return void();
+    if(!LoadSpectrum(file))
+    {
+        puts("No such file!");
+        return void();
+    }
     
     cout << "Press any key to start" << endl;
     WaitForInput();
@@ -94,9 +98,9 @@ void MDCheckKeys()
     }
 }
 
-char output[3][105];
 void MDPrintScreen()
 {
+    static char output[3][105];
     while(song::now_note <= song::note_cnt)
     {
         if(md_quit_flag) return ;
