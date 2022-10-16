@@ -142,6 +142,7 @@ void MDPrintScreen()
         con.update();
         this_thread::sleep_for(chrono::milliseconds(20));
     }
+    Sleep(OneSecond);
 }
 
 void MDChangeStatus(int status){
