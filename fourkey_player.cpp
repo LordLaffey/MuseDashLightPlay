@@ -1,7 +1,7 @@
 /**
  * @file xkey_player.cpp
  * @authors LordLaffey, Ptilopsis_w
- * @version v1.02
+ * @version v1.03
  * @date 2022-10-16
  */
 
@@ -143,8 +143,8 @@ void FourkeyPrintScreen()
         if(fourkey_status != -1 && NowTime() - fourkey_status_start <= Status_Time)
         {
             if(fourkey_status == 1) con << "Perfect" << endl;
-            else if(fourkey_status == 2) con << "Good" << endl;
-            else if(fourkey_status == 3) con << "Bad" << endl;
+            else if(fourkey_status == 2) con << "Good   " << endl;
+            else if(fourkey_status == 3) con << "Bad    " << endl;
         }
         con.update();
         this_thread::sleep_for(chrono::milliseconds(20));

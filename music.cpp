@@ -128,9 +128,9 @@ FILE *Music::ChooseMusic(int type)
 }
 
 namespace song {
-    const int Prefect = 80;
-    const int Great = 180;
-    const int Bad = 250;
+    const int Prefect = 50;
+    const int Great = 100;
+    const int Bad = 150;
     
     int note_cnt;
     atomic<int> now_note;

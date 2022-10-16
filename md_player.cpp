@@ -1,7 +1,7 @@
 /**
  * @details The player of MDLP
  * @author Ptilosis_w, LordLaffey
- * @version v1.02
+ * @version v1.03
  * @date 2022-10-16
 */
 
@@ -135,9 +135,9 @@ void MDPrintScreen()
         con << "===============================================" << endl;
         if(md_status != -1 && NowTime() - md_status_start <= Status_Time)
         {
-            if(md_status==0) con << "Miss" <<endl;
+            if(md_status==0) con << "Miss  " <<endl;
             else if(md_status==1) con << "Perfect" <<endl;
-            else if(md_status==2) con << "Great" <<endl;
+            else if(md_status==2) con << "Great  " <<endl;
         }
         con.update();
         this_thread::sleep_for(chrono::milliseconds(20));
