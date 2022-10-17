@@ -87,10 +87,10 @@ void XkeyCheckKeys()
 {
     while(!song.isEnd())
     {
-        int tmp=song.run();
+        bool tmp=song.run();
         if(tmp) XkeyChangeStatus(0),fourkey_combo=0;
-        song.miss_tot += tmp;
-        if(!_kbhit()) continue;// @pt 你体验一下
+        
+        if(!_kbhit()) continue;
         char c = _getch();
         if(c == 27) return fourkey_quit_flag=true,void();
         int now = setting.checkKey(c);
