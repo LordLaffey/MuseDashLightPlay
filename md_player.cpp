@@ -58,7 +58,10 @@ void MDPlayerMain()
     
     ClearScreen();
     
+    if(miss_tot==0) Print("Full",5),Print(" Combo!",15);
+    
     Sleep(OneSecond);
+    ClearScreen();
     cout << "-----------------------------------------------" << endl;
     cout << "Perfect\t\tGreat\t\tMiss" << endl;
     cout << (int)perfect_tot << "\t\t" << (int)good_tot << "\t\t" << (int)miss_tot << endl;
