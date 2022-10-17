@@ -5,6 +5,13 @@
 #include "header.h"
 using namespace std;
 
+struct Note {
+    int type;
+    int start,end;
+    Note() {}
+    Note(int t, int s, int e) : type(t), start(s), end(e) {}
+};
+
 class Song {
 private:
     // 判定偏移
@@ -15,28 +22,28 @@ private:
     {
         int note_cnt;
         int now_note, can_seen;
-        vector<int> note;
+        vector<Note> notes;
         void reset()
         {
             now_note = 1;
             can_seen = 1;
-            note.clear();
-            note.push_back(114514);
+            notes.clear();
+            notes.emplace_back();
         }
         int run()
         {
             int miss=0;
-            while(now_note <= note_cnt and !GetNoteState(note[now_note]))
+            while(now_note <= note_cnt and !GetNoteState(notes[now_note].end))
                 now_note++,miss++;
-            while(can_seen <= note_cnt and GetNoteState(note[can_seen]) != 5)
+            while(can_seen <= note_cnt and GetNoteState(notes[can_seen].start) != 5)
                 can_seen++;
             return miss;
         }
-        vector<int> getNotes()
+        vector<Note> getNotes()
         {
-            vector<int> v;
+            vector<Note> v;
             for(int i=now_note; i<can_seen; i++)
-                v.emplace_back(note[i]);
+                v.emplace_back(notes[i]);
             return v;
         }
     };
@@ -61,6 +68,7 @@ public:
 
     bool LoadSpectrum(FILE *fr)
     {
+        // 加载文件
         cout << "Loading spectrum..." << endl;
         if(fr == nullptr)
         {
@@ -69,24 +77,29 @@ public:
             return false;
         }
         
+        // 初始化
+        int type,readType;
         perfect_tot = 0;
         good_tot = 0;
         miss_tot = 0;
-
-        int type;
         for(int i=1; i<=trackNum; i++) track[i].reset();
 
         fscanf(fr, "%d %d %d", &note_cnt, &allTime, &type);
         trackNum=type*2; // 转换为轨道数
         for(int i = 1; i <= note_cnt; i++)
         {
-            int t,l;
-            fscanf(fr, "%d %d", &t, &l);
-            track[l].note.push_back(t);
+            int line,type,start,end;
+            fscanf(fr, "%d %d %d", &line, &type, &start);
+            if(type==2) // 滑条
+                fscanf(fr, "%d", &end);
+            else
+                end=start;
+            
+            track[line].notes.emplace_back(type, start, end);
         }
-        for(int i=1; i<=trackNum; i++) track[i].note_cnt=track[i].note.size()-1;
+        for(int i=1; i<=trackNum; i++) track[i].note_cnt=track[i].notes.size()-1;
+        
         fclose(fr);
-
         cout << "Spectrum loaded!" << endl;
         Sleep(OneSecond);
         ClearScreen();
@@ -110,18 +123,21 @@ public:
      * @brief 获取指定轨道应显示的notes
      * @param line 轨道号
     */
-    vector<int> getNotes(int line) { return track[line].getNotes();}
+    vector<Note> getNotes(int line) { return track[line].getNotes();}
 
      /**
      * @brief 获取指定行行首note的状态
      * @param line 轨道号
+     * @param type 建按下(1)/抬起(0)
      * @return 0: Miss, 1: Perfect, 2: Great, 3: Bad, 4: Far, 5: Cannot See
     */
-    int getStatus(int line)
+    int getStatus(int line, bool type)
     {
-        int s=GetNoteState(track[line].note[track[line].now_note]);
-        if(s<3+(trackNum==4)) ++track[line].now_note;
-        return s;
+        Note note = track[line].notes[track[line].now_note];
+        int s=GetNoteState(note.start),e=GetNoteState(note.end);
+
+        if(e<3+(trackNum==4)) ++track[line].now_note;
+        return type ? s : e;
     }
 
     bool isEnd() { return NowTime()>=allTime;}
