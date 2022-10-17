@@ -52,7 +52,7 @@ int main()
     
     ClearScreen();
     Print("Thanks for playing MDLP  >w<", 20);
-    Sleep(1000);
+    Sleep(500);
     ClearScreen();
 }
 
