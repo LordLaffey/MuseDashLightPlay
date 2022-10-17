@@ -96,7 +96,7 @@ void XkeyCheckKeys()
         {
             case 1: perfect_tot++; XkeyChangeStatus(1); fourkey_combo++; break;
             case 2: good_tot++; XkeyChangeStatus(2); fourkey_combo++; break;
-            case 3: bad_tot++; XkeyChangeStatus(3); fourkey_combo++; break;
+            case 3: bad_tot++; XkeyChangeStatus(3); fourkey_combo = 0; break;
         }
         t.now_note++;
         song::now_note++;
