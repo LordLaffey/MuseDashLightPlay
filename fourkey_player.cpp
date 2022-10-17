@@ -1,8 +1,8 @@
 /**
  * @file xkey_player.cpp
  * @authors LordLaffey, Ptilopsis_w
- * @version v1.03
- * @date 2022-10-16
+ * @version v1.04
+ * @date 2022-10-17
  */
 
 #include "include/header.h"
@@ -17,6 +17,7 @@ void FourkeyPrintScreen();
 void XkeyCheckKeys();
 void XkeyChangeStatus(int);
 
+atomic<int> fourkey_combo;
 atomic<int> fourkey_status,fourkey_status_start;
 atomic<bool> fourkey_quit_flag;
 void FourKeyPlayerMain()
@@ -31,6 +32,7 @@ void FourKeyPlayerMain()
         return void();
     }
     
+    fourkey_combo = 0;
     fourkey_quit_flag = false;
     for(int i = 1; i <= 4; i++)
         track[i].init(i);
@@ -79,7 +81,7 @@ void XkeyCheckKeys()
             Track &t=track[i];
             while(t.now_note <= t.note_cnt and !GetNoteState(t.note[t.now_note]))
                 miss_tot++, t.now_note++, song::now_note++,
-                    XkeyChangeStatus(0);
+                    XkeyChangeStatus(0), fourkey_combo=0;
             while(t.can_seen <= t.note_cnt and GetNoteState(t.note[t.can_seen]) != 5)
                 t.can_seen++;
         }
@@ -92,9 +94,9 @@ void XkeyCheckKeys()
         if(GetNoteState(t.note[t.now_note]) >= 4) continue;
         switch(GetNoteState(t.note[t.now_note]))
         {
-            case 1: perfect_tot++; XkeyChangeStatus(1); break;
-            case 2: good_tot++; XkeyChangeStatus(2); break;
-            case 3: bad_tot++; XkeyChangeStatus(3); break;
+            case 1: perfect_tot++; XkeyChangeStatus(1); fourkey_combo++; break;
+            case 2: good_tot++; XkeyChangeStatus(2); fourkey_combo++; break;
+            case 3: bad_tot++; XkeyChangeStatus(3); fourkey_combo++; break;
         }
         t.now_note++;
         song::now_note++;
@@ -142,10 +144,12 @@ void FourkeyPrintScreen()
         con << "====----====----====----====" << endl;
         if(fourkey_status != -1 && NowTime() - fourkey_status_start <= Status_Time)
         {
-            if(fourkey_status == 1) con << "Perfect" << endl;
-            else if(fourkey_status == 2) con << "Good   " << endl;
-            else if(fourkey_status == 3) con << "Bad    " << endl;
+            if(fourkey_status == 1) con << "Perfect";
+            else if(fourkey_status == 2) con << "Good   ";
+            else if(fourkey_status == 3) con << "Bad    ";
         }
+        else con << "       ";
+        if(fourkey_combo >= 5) con << setw(50) << "Combo: " << fourkey_combo;
         con.update();
         this_thread::sleep_for(chrono::milliseconds(20));
     }

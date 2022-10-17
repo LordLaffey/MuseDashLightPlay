@@ -1,8 +1,8 @@
 /**
  * @details The player of MDLP
  * @author Ptilosis_w, LordLaffey
- * @version v1.03
- * @date 2022-10-16
+ * @version v1.04
+ * @date 2022-10-17
 */
 
 #include <vector>
@@ -21,6 +21,7 @@ void MDPlayerMain();
 void MDCheckKeys();
 void MDChangeStatus(int);
 
+atomic<int> md_combo;
 atomic<int> md_status,md_status_start;
 atomic<bool> md_quit_flag;
 void MDPlayerMain()
@@ -34,17 +35,18 @@ void MDPlayerMain()
         return void();
     }
     
-    cout << "Press any key to start" << endl;
-    WaitForInput();
-    Print("Ready...\n", 9);
-    Print("GO!!!\n", 6);
-    
     song::reset();
     track[1].init(1);
     track[2].init(2);
     md_quit_flag = false;
     MDChangeStatus(-1);
-
+    md_combo = 0;
+    
+    cout << "Press any key to start" << endl;
+    WaitForInput();
+    Print("Ready...\n", 9);
+    Print("GO!!!\n", 6);
+    
     con.open();
     start_time = clock();
     thread print(MDPrintScreen);
@@ -82,7 +84,7 @@ void MDCheckKeys()
             Track &t = track[i];
             while(t.now_note <= t.note_cnt and !GetNoteState(t.note[t.now_note]))
                 miss_tot++, t.now_note++, song::now_note++, 
-                    MDChangeStatus(0);
+                    MDChangeStatus(0),md_combo=0;
             while(t.can_seen <= t.note_cnt and GetNoteState(t.note[t.can_seen]) != 5)
                 t.can_seen++;
         }
@@ -95,8 +97,8 @@ void MDCheckKeys()
         if(GetNoteState(t.note[t.now_note]) >= 3) continue;
         switch(GetNoteState(t.note[t.now_note]))
         {
-            case 1: perfect_tot++; MDChangeStatus(1); break;
-            case 2: good_tot++; MDChangeStatus(2); break;
+            case 1: perfect_tot++; MDChangeStatus(1);md_combo++; break;
+            case 2: good_tot++; MDChangeStatus(2);md_combo++; break;
         }
         t.now_note++;
         song::now_note++;
@@ -135,10 +137,13 @@ void MDPrintScreen()
         con << "===============================================" << endl;
         if(md_status != -1 && NowTime() - md_status_start <= Status_Time)
         {
-            if(md_status==0) con << "Miss  " <<endl;
-            else if(md_status==1) con << "Perfect" <<endl;
-            else if(md_status==2) con << "Great  " <<endl;
+            if(md_status==0) con << "Miss   ";
+            else if(md_status==1) con << "Perfect";
+            else if(md_status==2) con << "Great  ";
         }
+        else con << "       ";
+        if(md_combo>=5)
+            con<<setw(45)<<"Combo: "<<md_combo<<endl;
         con.update();
         this_thread::sleep_for(chrono::milliseconds(20));
     }
