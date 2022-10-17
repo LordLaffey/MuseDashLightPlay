@@ -149,7 +149,7 @@ void FourkeyPrintScreen()
             else if(fourkey_status == 3) con << "Bad    ";
         }
         else con << "       ";
-        if(fourkey_combo >= 5) con << setw(50) << "Combo: " << fourkey_combo;
+        if(fourkey_combo >= 5) con << setw(20) << "Combo: " << fourkey_combo;
         con.update();
         this_thread::sleep_for(chrono::milliseconds(20));
     }
