@@ -79,9 +79,8 @@ void MDCheckKeys()
 {
     while(!song.isEnd())
     {
-        int tmp = song.run();
+        bool tmp = song.run();
         if(tmp) MDChangeStatus(0),md_combo = 0;
-        song.miss_tot += tmp;
 
         if(!_kbhit()) continue;
         char c = _getch();
