@@ -1,7 +1,7 @@
 /**
  * @details The player of MDLP
  * @author Ptilosis_w, LordLaffey
- * @version v1.04
+ * @version v1.05
  * @date 2022-10-17
 */
 
@@ -9,11 +9,11 @@
 #include <thread>
 #include "include/console.h"
 #include "include/header.h"
+#include "include/song.h"
 #include "music.cpp"
 #include "settings.cpp"
 
 using namespace std;
-using namespace song;
 
 char WaitForInput();
 void MDPrintScreen();
@@ -29,15 +29,12 @@ void MDPlayerMain()
     ClearScreen();
     
     FILE* file = Music.ChooseMusic(1);
-    if(!LoadSpectrum(file))
+    if(!song.LoadSpectrum(file))
     {
         puts("No such file!");
         return void();
     }
-    
-    song::reset();
-    track[1].init(1);
-    track[2].init(2);
+
     md_quit_flag = false;
     MDChangeStatus(-1);
     md_combo = 0;
@@ -58,13 +55,13 @@ void MDPlayerMain()
     
     ClearScreen();
     
-    if(miss_tot==0) Print("Full",5),Print(" Combo!",15);
+    if(song.miss_tot==0) Print("Full",5),Print(" Combo!",15);
     
     Sleep(OneSecond);
     ClearScreen();
     cout << "-----------------------------------------------" << endl;
     cout << "Perfect\t\tGreat\t\tMiss" << endl;
-    cout << (int)perfect_tot << "\t\t" << (int)good_tot << "\t\t" << (int)miss_tot << endl;
+    cout << (int)song.perfect_tot << "\t\t" << (int)song.good_tot << "\t\t" << (int)song.miss_tot << endl;
     cout << "-----------------------------------------------" << endl;
     cout << "Ended" << endl;
     cout << "Press 'q' to return to the main menu" << endl;
@@ -80,50 +77,43 @@ void MDPlayerMain()
 
 void MDCheckKeys()
 {
-    while(song::now_note <= song::note_cnt)
+    while(!song.isEnd())
     {
-        for(int i=1;i<=2;i++)
-        {
-            Track &t = track[i];
-            while(t.now_note <= t.note_cnt and !GetNoteState(t.note[t.now_note]))
-                miss_tot++, t.now_note++, song::now_note++, 
-                    MDChangeStatus(0),md_combo=0;
-            while(t.can_seen <= t.note_cnt and GetNoteState(t.note[t.can_seen]) != 5)
-                t.can_seen++;
-        }
+        int tmp = song.run();
+        if(tmp) MDChangeStatus(0),md_combo = 0;
+        song.miss_tot += tmp;
+
         if(!_kbhit()) continue;
         char c = _getch();
         if(c == 27) return md_quit_flag=true,void();
         int now=setting.checkKey(c);
         if(now==-1) continue;
-        Track &t=track[now];
-        if(GetNoteState(t.note[t.now_note]) >= 3) continue;
-        switch(GetNoteState(t.note[t.now_note]))
+        
+        switch(song.getStatus(now))
         {
-            case 1: perfect_tot++; MDChangeStatus(1);md_combo++; break;
-            case 2: good_tot++; MDChangeStatus(2);md_combo++; break;
+            case 1: song.perfect_tot++; MDChangeStatus(1);md_combo++; break;
+            case 2: song.good_tot++; MDChangeStatus(2);md_combo++; break;
         }
-        t.now_note++;
-        song::now_note++;
     }
 }
 
 void MDPrintScreen()
 {
     static char output[3][105];
-    while(song::now_note <= song::note_cnt)
+    static vector<int> note;
+    while(!song.isEnd())
     {
         if(md_quit_flag) return ;
         con << "Perfect\t\tGreat\t\tMiss" << endl;
-        con << (int)perfect_tot << "\t\t" << (int)good_tot << "\t\t" << (int)miss_tot << endl;
+        con << (int)song.perfect_tot << "\t\t" << (int)song.good_tot << "\t\t" << (int)song.miss_tot << endl;
         con << "-----------------------------------------------" << endl;
         memset(output, 0, sizeof(output));
         for(int i = 1; i <= 2; i++)
         {
-            const Track &t = track[i];
-            for(int j = t.now_note; j < t.can_seen; j++)
+            note = song.getNotes(i);
+            for(auto v:note)
             {
-                int pos = MDSpeed * (t.note[j]-NowTime()) + 2;
+                int pos = MDSpeed * (v-NowTime()) + 2;
                 if(pos > 0 and pos <= 47) output[i][pos] = '<';
             }
         }

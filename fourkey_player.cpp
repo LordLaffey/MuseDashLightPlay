@@ -7,15 +7,17 @@
 
 #include "include/header.h"
 #include "include/console.h"
+#include "include/song.h"
 #include "settings.cpp"
 #include "music.cpp"
 using namespace std;
-using namespace song;
 
 void FourKeyPlayerMain();
 void FourkeyPrintScreen();
 void XkeyCheckKeys();
 void XkeyChangeStatus(int);
+void XkeyPrework();
+void XkeyEnd();
 
 atomic<int> fourkey_combo;
 atomic<int> fourkey_status,fourkey_status_start;
@@ -24,20 +26,7 @@ void FourKeyPlayerMain()
 {
     ClearScreen();
     
-    FILE* fr = Music.ChooseMusic(2);
-    if(!LoadSpectrum(fr))
-    {
-        cout << "No such file!" << endl;
-        Sleep(OneSecond);
-        return void();
-    }
-    
-    fourkey_combo = 0;
-    fourkey_quit_flag = false;
-    for(int i = 1; i <= 4; i++)
-        track[i].init(i);
-    song::reset();
-    XkeyChangeStatus(-1);
+    XkeyPrework();
     
     cout << "Press any key to start" << endl;
     WaitForInput();
@@ -50,13 +39,37 @@ void FourKeyPlayerMain()
     thread check(XkeyCheckKeys);
     print.join();
     check.join();
-
     con.close();
 
+    XkeyEnd();
+    ClearScreen();
+
+}
+
+// to make the Main() function more clear
+void XkeyPrework(){
+    
+    FILE* fr = Music.ChooseMusic(2);
+    if(!song.LoadSpectrum(fr))
+    {
+        cout << "No such file!" << endl;
+        Sleep(OneSecond);
+        return void();
+    }
+    
+    fourkey_combo = 0;
+    fourkey_quit_flag = false;
+    XkeyChangeStatus(-1);
+    
+}
+
+// to make the Main() function more clear
+void XkeyEnd(){
+    
     ClearScreen();
     cout << "Perfect\tGood\tBad\tMiss" << endl;
-    cout << (int)perfect_tot << "\t" << (int)good_tot << "\t" 
-        << (int)bad_tot << "\t" << (int)miss_tot << endl;
+    cout << (int)song.perfect_tot << "\t" << (int)song.good_tot << "\t" 
+        << (int)song.bad_tot << "\t" << (int)song.miss_tot << endl;
     cout << "----------------------------" << endl;
     cout << "Ended" <<endl;
     cout << "Press 'q' to return to the main menu" << endl;
@@ -68,61 +81,53 @@ void FourKeyPlayerMain()
         if(c == 'q') break;
     }
     
-    ClearScreen();
-
 }
 
 void XkeyCheckKeys()
 {
-    while(song::now_note <= song::note_cnt)
+    while(!song.isEnd())
     {
-        for(int i=1;i<=4;i++)
-        {
-            Track &t=track[i];
-            while(t.now_note <= t.note_cnt and !GetNoteState(t.note[t.now_note]))
-                miss_tot++, t.now_note++, song::now_note++,
-                    XkeyChangeStatus(0), fourkey_combo=0;
-            while(t.can_seen <= t.note_cnt and GetNoteState(t.note[t.can_seen]) != 5)
-                t.can_seen++;
-        }
-        if(!_kbhit()) continue;
+        int tmp=song.run();
+        if(tmp) XkeyChangeStatus(0),fourkey_combo=0;
+        song.miss_tot += tmp;
+        if(!_kbhit()) continue;// @pt 你体验一下
         char c = _getch();
         if(c == 27) return fourkey_quit_flag=true,void();
         int now = setting.checkKey(c);
         if(now==-1) continue;
-        Track &t=track[now];
-        if(GetNoteState(t.note[t.now_note]) >= 4) continue;
-        switch(GetNoteState(t.note[t.now_note]))
+        switch(song.getStatus(now))
         {
-            case 1: perfect_tot++; XkeyChangeStatus(1); fourkey_combo++; break;
-            case 2: good_tot++; XkeyChangeStatus(2); fourkey_combo++; break;
-            case 3: bad_tot++; XkeyChangeStatus(3); fourkey_combo = 0; break;
+            case 1: song.perfect_tot++; XkeyChangeStatus(1); fourkey_combo++; break;
+            case 2: song.good_tot++; XkeyChangeStatus(2); fourkey_combo++; break;
+            case 3: song.bad_tot++; XkeyChangeStatus(3); fourkey_combo = 0; break;
         }
-        t.now_note++;
-        song::now_note++;
     }
 }
 
+/**
+ * 屏幕打印线程
+*/
 void FourkeyPrintScreen()
 {
     static char output[20][40];
     static char buf[1000];
+    static vector<int> note;
     memset(output, ' ', sizeof(output));
-    while(song::now_note <= song::note_cnt)
+    while(!song.isEnd())
     {
         if(fourkey_quit_flag) return ;
         ClearScreen();
         con << "Perfect\tGood\tBad\tMiss" << endl;
-        con << (int)perfect_tot << "\t" << (int)good_tot << "\t" 
-            << (int)bad_tot << "\t" << (int)miss_tot << endl;
+        con << (int)song.perfect_tot << "\t" << (int)song.good_tot << "\t" 
+            << (int)song.bad_tot << "\t" << (int)song.miss_tot << endl;
         con << "----------------------------" << endl;
         memset(output, 0, sizeof(output));
         for(int i = 1; i <= 4; i++)
         {
-            const Track &t = track[i];
-            for(int j = t.now_note; j < t.can_seen; j++)
+            note=song.getNotes(i);
+            for(auto v:note)
             {
-                int pos = 15-FourKeySpeed * (t.note[j] - NowTime())+2;
+                int pos = 15-FourKeySpeed * (v - NowTime())+2;
                 if(pos < 0 || pos > 15) continue;
                 output[pos][(i-1)*8+1] = 'x';
                 output[pos][(i-1)*8+2] = 'x';
@@ -157,8 +162,11 @@ void FourkeyPrintScreen()
     
 }
 
+/**
+ * 更改实时响应状态
+*/
 void XkeyChangeStatus(int status){
-
+    
     fourkey_status = status;
     fourkey_status_start = NowTime();
     
