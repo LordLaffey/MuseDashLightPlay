@@ -17,7 +17,7 @@ Perfect         Bad             Miss
 ===============================================
 ```
 
-界面(FourKey Mode)：
+界面(FourKey Mode):
 
 ```
 Perfect Good    bad    miss
@@ -47,7 +47,7 @@ xxxx
 >
 > 4Key 模式的谱子可以使用 recorder 录制或使用 tools 中的 osu2rbq 将 osu 谱面转为 MDLP 谱面。
 >
-> rbqv2.0 文件更改了 note 的存储格式，旧版本的 MDLP 无法兼容，请使用 MDLP v1.20 及以上版本，recorder 只支持 rbqv2.0 文件的单 note，如果想要使用 hold 键，敬请期待 MDLP NotesMaker。
+> rbqv2.0 文件更改了 note 的存储格式，旧版本的 MDLP 无法兼容，请使用 MDLP v1.20 及以上版本，recorder 只支持 rbqv2.0 文件的单 note，如果想要使用 hold 键，敬请期待 MDLP NotesMaker，或者使用 osu2rbq。
 
 欢迎游玩，提出建议，或做出贡献（提交 Issues 和 PRs），万分感激 >w<。
 
