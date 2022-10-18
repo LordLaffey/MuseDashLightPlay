@@ -1,43 +1,33 @@
 /**
  * @file xkey_player.cpp
  * @authors LordLaffey, Ptilopsis_w
- * @version v1.04
+ * @version v1.05
  * @date 2022-10-17
  */
 
 #include "include/header.h"
 #include "include/console.h"
+#include "include/song.h"
 #include "settings.cpp"
 #include "music.cpp"
+#include <wingdi.h>
 using namespace std;
-using namespace song;
 
 void FourKeyPlayerMain();
 void FourkeyPrintScreen();
-void XkeyCheckKeys();
-void XkeyChangeStatus(int);
+void FourKeyCheckKeys();
+void FourKeyChangeStatus(int);
+void FourKeyPrework();
+void FourKeyEndwork();
 
+HHOOK fourkey_keyboardHook = 0;     // 钩子句柄
 atomic<int> fourkey_combo;
 atomic<int> fourkey_status,fourkey_status_start;
 atomic<bool> fourkey_quit_flag;
 void FourKeyPlayerMain()
 {
     ClearScreen();
-    
-    FILE* fr = Music.ChooseMusic(2);
-    if(!LoadSpectrum(fr))
-    {
-        cout << "No such file!" << endl;
-        Sleep(OneSecond);
-        return void();
-    }
-    
-    fourkey_combo = 0;
-    fourkey_quit_flag = false;
-    for(int i = 1; i <= 4; i++)
-        track[i].init(i);
-    song::reset();
-    XkeyChangeStatus(-1);
+    FourKeyPrework();
     
     cout << "Press any key to start" << endl;
     WaitForInput();
@@ -47,16 +37,40 @@ void FourKeyPlayerMain()
     con.open();
     start_time = clock();
     thread print(FourkeyPrintScreen);
-    thread check(XkeyCheckKeys);
+    thread check(FourKeyCheckKeys);
     print.join();
     check.join();
-
     con.close();
 
+    Sleep(OneSecond);
+    FourKeyEndwork();
+
+}
+
+// to make the Main() function more clear
+void FourKeyPrework(){
+    
+    FILE* fr = Music.ChooseMusic(2);
+    if(!song.LoadSpectrum(fr))
+    {
+        cout << "No such file!" << endl;
+        Sleep(OneSecond);
+        return void();
+    }
+    
+    fourkey_combo = 0;
+    fourkey_quit_flag = false;
+    FourKeyChangeStatus(-1);
+    
+}
+
+// to make the Main() function more clear
+void FourKeyEndwork(){
+    
     ClearScreen();
     cout << "Perfect\tGood\tBad\tMiss" << endl;
-    cout << (int)perfect_tot << "\t" << (int)good_tot << "\t" 
-        << (int)bad_tot << "\t" << (int)miss_tot << endl;
+    cout << (int)song.perfect_tot << "\t" << (int)song.good_tot << "\t" 
+        << (int)song.bad_tot << "\t" << (int)song.miss_tot << endl;
     cout << "----------------------------" << endl;
     cout << "Ended" <<endl;
     cout << "Press 'q' to return to the main menu" << endl;
@@ -67,67 +81,137 @@ void FourKeyPlayerMain()
         char c = _getch();
         if(c == 'q') break;
     }
-    
     ClearScreen();
-
+    
 }
 
-void XkeyCheckKeys()
+/**
+ * @brief 监听按键回调函数
+ * @param nCode 规定钩子如何处理消息，小于 0 则直接 CallNextHookEx
+ * @param wParam 消息类型
+ * @param lParam 指向某个结构体的指针，这里是 KBDLLHOOKSTRUCT（低级键盘输入事件）
+*/
+LRESULT CALLBACK FourKey_LowLevelKeyboardProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARAM lParam)
 {
-    while(song::now_note <= song::note_cnt)
+    KBDLLHOOKSTRUCT *ks = (KBDLLHOOKSTRUCT*)lParam;		// 包含低级键盘输入事件信息
+    /*
+    typedef struct tagKBDLLHOOKSTRUCT {
+        DWORD     vkCode;		// 按键代号
+        DWORD     scanCode;		// 硬件扫描代号，同 vkCode 也可以作为按键的代号。
+        DWORD     flags;		// 事件类型，一般按键按下为 0 抬起为 128。
+        DWORD     time;			// 消息时间戳
+        ULONG_PTR dwExtraInfo;	// 消息附加信息，一般为 0。
+    }KBDLLHOOKSTRUCT,*LPKBDLLHOOKSTRUCT,*PKBDLLHOOKSTRUCT;
+    */
+
+    if(ks->vkCode == 27) fourkey_quit_flag=true;
+    int now = setting.checkKey(ks->vkCode);
+
+    if(now!=-1)
     {
-        for(int i=1;i<=4;i++)
+        switch(song.getStatus(now, (ks->flags == 0)))
         {
-            Track &t=track[i];
-            while(t.now_note <= t.note_cnt and !GetNoteState(t.note[t.now_note]))
-                miss_tot++, t.now_note++, song::now_note++,
-                    XkeyChangeStatus(0), fourkey_combo=0;
-            while(t.can_seen <= t.note_cnt and GetNoteState(t.note[t.can_seen]) != 5)
-                t.can_seen++;
+            case 1: song.perfect_tot++; FourKeyChangeStatus(1); fourkey_combo++; break;
+            case 2: song.good_tot++; FourKeyChangeStatus(2); fourkey_combo++; break;
+            case 3: song.bad_tot++; FourKeyChangeStatus(3); fourkey_combo = 0; break;
         }
-        if(!_kbhit()) continue;
-        char c = _getch();
-        if(c == 27) return fourkey_quit_flag=true,void();
-        int now = setting.checkKey(c);
-        if(now==-1) continue;
-        Track &t=track[now];
-        if(GetNoteState(t.note[t.now_note]) >= 4) continue;
-        switch(GetNoteState(t.note[t.now_note]))
-        {
-            case 1: perfect_tot++; XkeyChangeStatus(1); fourkey_combo++; break;
-            case 2: good_tot++; XkeyChangeStatus(2); fourkey_combo++; break;
-            case 3: bad_tot++; XkeyChangeStatus(3); fourkey_combo = 0; break;
-        }
-        t.now_note++;
-        song::now_note++;
     }
+
+    return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
+void FourKeyCheckKeys()
+{
+    // 安装钩子
+    fourkey_keyboardHook = SetWindowsHookEx(
+        WH_KEYBOARD_LL,			// 钩子类型，WH_KEYBOARD_LL 为键盘钩子
+        FourKey_LowLevelKeyboardProc,	// 指向钩子函数的指针
+        GetModuleHandleA(NULL),	// Dll 句柄
+        (DWORD)NULL
+    );
+
+    if (fourkey_keyboardHook == 0) // 挂钩失败
+    {
+        fourkey_quit_flag = true;// make md_printscreen quit
+        puts("fuck hook");
+        return ;
+    }
+
+    MSG msg;
+    while(!song.isEnd())
+    {
+        bool tmp = song.run();
+        if(tmp) FourKeyChangeStatus(0),fourkey_combo = 0;
+        if(fourkey_quit_flag) break;
+        
+        // 如果消息队列中有消息
+        if (PeekMessageA(
+            &msg,		// MSG 接收这个消息
+            NULL,		// 检测消息的窗口句柄，NULL：检索当前线程所有窗口消息
+            (UINT)NULL,		// 检查消息范围中第一个消息的值，NULL：检查所有消息（必须和下面的同时为NULL）
+            (UINT)NULL,		// 检查消息范围中最后一个消息的值，NULL：检查所有消息（必须和上面的同时为NULL）
+            PM_REMOVE	// 处理消息的方式，PM_REMOVE：处理后将消息从队列中删除
+            ))
+        {
+            TranslateMessage(&msg);     // 把按键消息传递给字符消息
+            DispatchMessageW(&msg);     // 将消息分派给窗口程序
+        }
+        else
+            Sleep(0);    //避免CPU全负载运行
+    }
+    UnhookWindowsHookEx(fourkey_keyboardHook);      // 删除钩子
+}
+
+/**
+ * 屏幕打印线程
+*/
 void FourkeyPrintScreen()
 {
     static char output[20][40];
     static char buf[1000];
+    static vector<Note> note;
     memset(output, ' ', sizeof(output));
-    while(song::now_note <= song::note_cnt)
+    while(!song.isEnd())
     {
         if(fourkey_quit_flag) return ;
         ClearScreen();
         con << "Perfect\tGood\tBad\tMiss" << endl;
-        con << (int)perfect_tot << "\t" << (int)good_tot << "\t" 
-            << (int)bad_tot << "\t" << (int)miss_tot << endl;
+        con << (int)song.perfect_tot << "\t" << (int)song.good_tot << "\t" 
+            << (int)song.bad_tot << "\t" << (int)song.miss_tot << endl;
         con << "----------------------------" << endl;
         memset(output, 0, sizeof(output));
         for(int i = 1; i <= 4; i++)
         {
-            const Track &t = track[i];
-            for(int j = t.now_note; j < t.can_seen; j++)
+            note=song.getNotes(i);
+            int st=(i-1)*8;
+            for(auto v:note)
             {
-                int pos = 15-FourKeySpeed * (t.note[j] - NowTime())+2;
-                if(pos < 0 || pos > 15) continue;
-                output[pos][(i-1)*8+1] = 'x';
-                output[pos][(i-1)*8+2] = 'x';
-                output[pos][(i-1)*8+3] = 'x';
-                output[pos][(i-1)*8+4] = 'x';
+                if(v.type==1)
+                {
+                    int pos = 15-FourKeySpeed * (v.start - NowTime())+2;
+                    if(pos < 0 || pos > 15) continue;
+                    for(int j = 1; j<=4; j++)
+                        output[pos][st+j] = 'x';
+                }
+                else
+                {
+                    int spos = 15-FourKeySpeed * (v.start - NowTime())+2;
+                    int epos = 15-FourKeySpeed * (v.end - NowTime())+2;
+                    if(spos >= 0 and spos <= 15)
+                    {
+                        for(int j = 1; j<=4; j++)
+                            output[spos][st+j] = '~';
+                    }
+                    else if(spos>=15) spos=16;
+                    if(epos >= 0 and epos <= 15)
+                    {
+                        for(int j = 1; j<=4; j++)
+                            output[epos][st+j] = '~';
+                    }
+                    else if(epos<=15) epos=-1;
+                    for(int j = epos+1; j < spos; j++)
+                        output[j][st+1]='|',output[j][st+4]='|';
+                }
             }
         }
         for(int i = 1; i <= 15; i++)
@@ -153,12 +237,14 @@ void FourkeyPrintScreen()
         con.update();
         this_thread::sleep_for(chrono::milliseconds(20));
     }
-    Sleep(OneSecond);
     
 }
 
-void XkeyChangeStatus(int status){
-
+/**
+ * 更改实时响应状态
+*/
+void FourKeyChangeStatus(int status){
+    
     fourkey_status = status;
     fourkey_status_start = NowTime();
     
@@ -169,13 +255,13 @@ void XkeyChangeStatus(int status){
 Perfect Good    bad    miss
 7777    7777    7777   7777
 ----------------------------
-                xxxx
-        xxxx
-xxxx
-        xxxx
-                xxxx
-                        xxxx
-                xxxx
+                ~~~~
+                |  |
+                |  |
+                |  |
+                |  |
+                |  | 
+                ~~~~
         xxxx
 xxxx
         xxxx

@@ -94,7 +94,7 @@ void Save(string name, int cnt, int len, int type)
     {
         fscanf(tmpr, "%s ", s1);
         fscanf(tmpr, "%s\n", s2);
-        fprintf(fw, "%s %s\n", s1, s2);
+        fprintf(fw, "%s %d %s\n",s2,1,s1);
     }
     
     fclose(fw);

@@ -99,7 +99,9 @@ void Music::PrintList(int type)
     printf("===================================================\n");
 }
 
-// type = [1: MuseDash Mode | 2: 4K Mode]
+/**
+* @param type 1: MuseDash Mode, 2: 4K Mode
+*/
 FILE *Music::ChooseMusic(int type)
 {
     begin:
@@ -125,82 +127,6 @@ FILE *Music::ChooseMusic(int type)
     path += type_name + "\\" + list[type][id - 1].second;
     
     return fopen(path.data(), "r");
-}
-
-namespace song {
-    const int Prefect = 50;
-    const int Great = 100;
-    const int Bad = 150;
-    
-    int note_cnt;
-    atomic<int> now_note;
-    atomic<int> perfect_tot, good_tot, bad_tot, miss_tot;
-    struct note {
-        int time, line;
-    } note[100000];
-    void reset()
-    {
-        now_note = 1;
-        perfect_tot = 0;
-        good_tot = 0;
-        miss_tot = 0;
-    }
-    bool LoadSpectrum(FILE *fr)
-    {
-        reset();
-        cout << "Loading spectrum..." << endl;
-        Sleep(OneSecond);
-        if(fr == nullptr)
-        {
-            cout << "No spectrum found" << endl;
-            Sleep(OneSecond);
-            return false;
-        }
-        
-        int tmp,type;
-        fscanf(fr, "%d %d %d", &note_cnt, &tmp, &type);
-        for(int i = 1; i <= note_cnt; i++)
-            fscanf(fr, "%d %d", &note[i].time, &note[i].line);
-        
-        fclose(fr);
-        cout << "Spectrum loaded!" << endl;
-        Sleep(OneSecond);
-        ClearScreen();
-        return true;
-    }
-    
-    // 0: Miss, 1: Perfect, 2: Great, 3: Bad, 4: Far, 5: Cannot See
-    int GetNoteState(int x)
-    {
-        int now_time = NowTime();
-        if(now_time-x > Bad) return 0;
-        else if(abs(now_time-x) <= Prefect) return 1;
-        else if(abs(now_time-x) <= Great) return 2;
-        else if(abs(now_time-x) <= Bad) return 3;
-        else if(x-now_time <= MDFallTime) return 4;
-        else return 5;
-    }
-    
-    struct Track
-    {
-        int note_cnt;
-        atomic<int> now_note, can_seen;
-        vector<int> note;
-        void init(int id)
-        {
-            reset(); note.push_back(114514);
-            for(int i = 1; i <= song::note_cnt; i++)
-                if(song::note[i].line == id)
-                    note.push_back(song::note[i].time);
-            note_cnt = note.size()-1;
-        }
-        void reset()
-        {
-            now_note = 1;
-            can_seen = 1;
-            note.clear();
-        }
-    } track[5];
 }
 
 #endif // _MDLP_MUSIC
