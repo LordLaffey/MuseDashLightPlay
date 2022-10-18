@@ -7,7 +7,7 @@ using namespace std;
 struct Note {
     int type;       // 1: 短键 2: 长条
     int start,end;
-    bool isPress = false;
+    bool hvcheck = false;
     Note() {}
     Note(int t, int s, int e) : type(t), start(s), end(e) {}
 };
@@ -51,6 +51,7 @@ private:
     int note_cnt;
     int allTime; // 整体时间
     int trackNum; // 轨道数
+    bool isPress;
     Track track[5];
 
     static int GetNoteState(int time)
@@ -131,19 +132,52 @@ public:
      * @param type 建按下(1)/抬起(0)
      * @return 0: Miss, 1: Perfect, 2: Great, 3: Bad, 4: Far, 5: Cannot See
     */
-    int getStatus(int line, bool type)
-    {
+
+    int getStatus(int line,int type){
+        
         Note &note = track[line].notes[track[line].now_note];
-        int s=GetNoteState(note.start),e=GetNoteState(note.end);
-
-        if(type&&note.isPress)
-            s=1;
-        else if(!type&&note.isPress)
-            e=min(e, 3-(trackNum!=4));
-
-        if(type&&s<3+(trackNum==4)) note.isPress=1;
-        if(e<3+(trackNum==4)) ++track[line].now_note;
-        return type ? s : e;
+        int lstpress=isPress;
+        
+        isPress=(type==1);
+        if(note.type==1&&type==1)
+        {
+            int state = GetNoteState(note.start);
+            if(state<=2+(trackNum==4)) track[line].now_note++;
+            return GetNoteState(note.start);
+        }
+        else if(note.type==2)
+        {
+            if(type==1)
+            {
+                int s=GetNoteState(note.start);
+                if(note.hvcheck)
+                {
+                    if(NowTime()>note.end&&trackNum==2)
+                        track[line].now_note++,s=1;
+                    else s=4;
+                }
+                else if(!note.hvcheck)
+                {
+                    if(!lstpress&&s<=2+(trackNum==4))
+                        note.hvcheck=true;
+                    else s=4;
+                }
+                return s;
+            }
+            else
+            {
+                int e=GetNoteState(note.end);
+                if(note.hvcheck)
+                {
+                    track[line].now_note++;
+                    if(e>=1&&e<=2) return e;
+                    else return 0;
+                }
+            }
+        }
+        
+        return 5;
+        
     }
 
     bool isEnd() { return NowTime()>=allTime;}

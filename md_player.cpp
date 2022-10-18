@@ -21,8 +21,7 @@ void MDPlayerMain();
 void MDCheckKeys();
 void MDChangeStatus(int);
 
-HHOOK md_keyboardHook = 0;  // 钩子句柄
-bool isHit[10];           // 记录每个轨道是否按下
+HHOOK md_keyboardHook = 0;     // 钩子句柄
 atomic<int> md_combo;
 atomic<int> md_status,md_status_start;
 atomic<bool> md_quit_flag;
@@ -97,16 +96,11 @@ LRESULT CALLBACK LowLevelKeyboardProc(_In_ int nCode, _In_ WPARAM wParam, _In_ L
     }KBDLLHOOKSTRUCT,*LPKBDLLHOOKSTRUCT,*PKBDLLHOOKSTRUCT;
     */
 
-    if(ks->vkCode == 27) md_quit_flag=true; // ESC 退出
-
+    if(ks->vkCode == 27) md_quit_flag=true;
     int now = setting.checkKey(ks->vkCode);
+
     if(now!=-1)
     {
-        if(ks->flags==128) isHit[now]=false;
-        else if(isHit[now]) // 已经按下
-        return CallNextHookEx(NULL, nCode, wParam, lParam);
-        
-        isHit[now]=true;
         switch(song.getStatus(now, (ks->flags == 0)))
         {
             case 1: song.perfect_tot++; MDChangeStatus(1); md_combo++; break;
@@ -173,19 +167,6 @@ void MDPrintScreen()
         con << "-----------------------------------------------" << endl;
         
         memset(output, 0, sizeof(output));
-        /**
-         * @todo
-         */
-        // 
-        // for(int i = 1; i <= 2; i++)
-        // {
-        //     note = song.getNotes(i);
-        //     for(auto v:note)
-        //     {
-        //         int pos = MDSpeed * (v.start-NowTime()) + 2;
-        //         if(pos > 0 and pos <= 47) output[i][pos] = '<';
-        //     }
-        // }
         for(int i = 1; i <= 2; i++)
         {
             note = song.getNotes(i);
