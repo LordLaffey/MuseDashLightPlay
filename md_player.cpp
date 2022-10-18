@@ -21,7 +21,8 @@ void MDPlayerMain();
 void MDCheckKeys();
 void MDChangeStatus(int);
 
-HHOOK md_keyboardHook = 0;     // 钩子句柄
+HHOOK md_keyboardHook = 0;  // 钩子句柄
+bool isHit[1000];           // 记录每个按键是否按下
 atomic<int> md_combo;
 atomic<int> md_status,md_status_start;
 atomic<bool> md_quit_flag;
@@ -96,9 +97,13 @@ LRESULT CALLBACK LowLevelKeyboardProc(_In_ int nCode, _In_ WPARAM wParam, _In_ L
     }KBDLLHOOKSTRUCT,*LPKBDLLHOOKSTRUCT,*PKBDLLHOOKSTRUCT;
     */
 
-    if(ks->vkCode == 27) md_quit_flag=true;
-    int now = setting.checkKey(ks->vkCode);
+    if(ks->vkCode == 27) md_quit_flag=true; // ESC 退出
+    if(ks->flags==128) isHit[ks->vkCode]=false;
+    else if(isHit[ks->vkCode]) // 已经按下
+    return CallNextHookEx(NULL, nCode, wParam, lParam);
 
+    isHit[ks->vkCode]=true;
+    int now = setting.checkKey(ks->vkCode);
     if(now!=-1)
     {
         switch(song.getStatus(now, (ks->flags == 0)))
