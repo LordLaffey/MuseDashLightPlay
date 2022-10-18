@@ -1,7 +1,7 @@
 /**
  * @file xkey_player.cpp
  * @authors LordLaffey, Ptilopsis_w
- * @version v1.04
+ * @version v1.05
  * @date 2022-10-17
  */
 
@@ -17,7 +17,7 @@ void FourkeyPrintScreen();
 void XkeyCheckKeys();
 void XkeyChangeStatus(int);
 void XkeyPrework();
-void XkeyEnd();
+void XkeyEndwork();
 
 atomic<int> fourkey_combo;
 atomic<int> fourkey_status,fourkey_status_start;
@@ -25,7 +25,6 @@ atomic<bool> fourkey_quit_flag;
 void FourKeyPlayerMain()
 {
     ClearScreen();
-    
     XkeyPrework();
     
     cout << "Press any key to start" << endl;
@@ -41,8 +40,8 @@ void FourKeyPlayerMain()
     check.join();
     con.close();
 
-    XkeyEnd();
-    ClearScreen();
+    Sleep(OneSecond);
+    XkeyEndwork();
 
 }
 
@@ -64,7 +63,7 @@ void XkeyPrework(){
 }
 
 // to make the Main() function more clear
-void XkeyEnd(){
+void XkeyEndwork(){
     
     ClearScreen();
     cout << "Perfect\tGood\tBad\tMiss" << endl;
@@ -80,6 +79,7 @@ void XkeyEnd(){
         char c = _getch();
         if(c == 'q') break;
     }
+    ClearScreen();
     
 }
 
@@ -87,20 +87,20 @@ void XkeyCheckKeys()
 {
     while(!song.isEnd())
     {
-        bool tmp=song.run();
+        int tmp=song.run();
         if(tmp) XkeyChangeStatus(0),fourkey_combo=0;
-        
+        song.miss_tot += tmp;
         if(!_kbhit()) continue;
         char c = _getch();
         if(c == 27) return fourkey_quit_flag=true,void();
         int now = setting.checkKey(c);
         if(now==-1) continue;
-        switch(song.getStatus(now))
-        {
-            case 1: song.perfect_tot++; XkeyChangeStatus(1); fourkey_combo++; break;
-            case 2: song.good_tot++; XkeyChangeStatus(2); fourkey_combo++; break;
-            case 3: song.bad_tot++; XkeyChangeStatus(3); fourkey_combo = 0; break;
-        }
+        // switch(song.getStatus(now))
+        // {
+        //     case 1: song.perfect_tot++; XkeyChangeStatus(1); fourkey_combo++; break;
+        //     case 2: song.good_tot++; XkeyChangeStatus(2); fourkey_combo++; break;
+        //     case 3: song.bad_tot++; XkeyChangeStatus(3); fourkey_combo = 0; break;
+        // }
     }
 }
 
@@ -124,7 +124,7 @@ void FourkeyPrintScreen()
         memset(output, 0, sizeof(output));
         for(int i = 1; i <= 4; i++)
         {
-            note=song.getNotes(i);
+            // note=song.getNotes(i);
             for(auto v:note)
             {
                 int pos = 15-FourKeySpeed * (v - NowTime())+2;
@@ -158,7 +158,6 @@ void FourkeyPrintScreen()
         con.update();
         this_thread::sleep_for(chrono::milliseconds(20));
     }
-    Sleep(OneSecond);
     
 }
 

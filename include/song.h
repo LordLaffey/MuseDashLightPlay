@@ -1,13 +1,13 @@
 #ifndef _SONG
 #define _SONG
 
-#include <vector>
 #include "header.h"
 using namespace std;
 
 struct Note {
-    int type;
+    int type;       // 1: 短键 2: 长条
     int start,end;
+    bool isPress = false;
     Note() {}
     Note(int t, int s, int e) : type(t), start(s), end(e) {}
 };
@@ -133,9 +133,15 @@ public:
     */
     int getStatus(int line, bool type)
     {
-        Note note = track[line].notes[track[line].now_note];
+        Note &note = track[line].notes[track[line].now_note];
         int s=GetNoteState(note.start),e=GetNoteState(note.end);
 
+        if(type&&note.isPress)
+            s=1;
+        else if(!type&&note.isPress)
+            e=min(e, 3-(trackNum!=4));
+
+        if(type&&s<3+(trackNum==4)) note.isPress=1;
         if(e<3+(trackNum==4)) ++track[line].now_note;
         return type ? s : e;
     }
