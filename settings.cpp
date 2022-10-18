@@ -1,6 +1,7 @@
 #ifndef _MDLP_SETTING
 #define _MDLP_SETTING
 
+#include <sec_api/stdio_s.h>
 #include <vector>
 #include <set>
 #include "include/header.h"
@@ -14,17 +15,17 @@ class Setting{
     
     private:
         vector<pair<char,int> > keys;
-        int num;
+        string path;
         void write()
         {
-            FILE* fw = fopen("data/settings.laf","w");
+            FILE* fw = fopen(path.data(),"w");
             for(auto key : keys)
                 fprintf(fw, "%c %d\n", key.first, key.second);
             fclose(fw);
         }
         void read()
         {
-            FILE* fr = fopen("data/settings.laf","r");
+            FILE* fr = fopen(path.data(),"r");
             keys.clear();
             char c; int x;
             while(fscanf(fr, "%c %d\n", &c, &x) != EOF)
@@ -32,15 +33,22 @@ class Setting{
             fclose(fr);
         }
     public:
+        void Prework(int typ){
+            
+            path=typ==0?"data/md_settings.laf":"data/fourkey_settings.laf";
+            load();
+            
+        }
         void load()
         {
             ClearScreen();
             Print("Loading...\n", 20);
             
-            if(access("data/settings.laf",0) == -1)
+            if(access(path.data(),0) == -1)
             {
-                keys = {{'d',1}, {'f',1}, {'j',2}, {'k',2}};
-                num = 2;
+                if(path=="data/md_settings.laf")
+                    keys = {{'d',1}, {'f',1}, {'j',2}, {'k',2}};
+                else keys = {{'d',1}, {'f',2}, {'j',3}, {'k',4}};
                 write();
             }
             
@@ -63,56 +71,78 @@ class Setting{
                 printf("%c %d\n", key.first, key.second);
             WaitForInput();
         }
-        void set(vector<pair<char,int>> newkeys, int num)
+        void set(vector<pair<char,int>> newkeys)
         {
             keys = newkeys;
-            this->num = num;
             write();
-        }
-        int getKeyNum()
-        {
-            return num;
         }
     
 };
 
-Setting setting;
+Setting setting[2];
 
-void ResetKey();
+void ResetKey(int);
 
 void SettingsMain()
 {
-    system("cls");
+    begin:
+    
+    ClearScreen();
+    
+    puts("1. Muse Dash Setting.");
+    puts("2. 4Key Setting.");
+    puts("3. Back.");
+    
+    int type;
+    while(1)
+    {
+        if(!_kbhit()) continue;
+        char c = _getch();
+        if(c=='1')
+            {type = 1; break;}
+        else if(c=='2')
+            {type = 2; break;}
+        else if(c=='3')
+            {goto end; break;}
+    }
+    
+    ClearScreen();
+    Print(type==1?"Muse Dash ":"4Key ", 20);
     Print("Settings:\n",20);
-    cout << "1. Reset the keys" << endl;
-    cout << "2. Print the keys" << endl;
-    cout << "3. Back\n" << endl;
+    cout << "1. Reset the keys." << endl;
+    cout << "2. Print the keys." << endl;
+    cout << "3. Back.\n" << endl;
+    
+    type--;
     while(true)
     {
-        char c = WaitForInput();
+        if(!_kbhit()) continue;
+        char c = _getch();
         switch(c)
         {
-            case '1': ResetKey(); goto end;
-            case '2': setting.printKey(); goto end;
-            case '3': goto end; break;
+            case '1': ResetKey(type+1); goto end;
+            case '2': setting[type].printKey(); goto end;
+            case '3': goto begin; break;
             default: break;
         }
     }
+    
     end:;
 }
 
-void ResetKey()
+void ResetKey(int type)
 {
+    type--;
     vector<pair<char,int>> keys;
-    set<char> st; int num;
+    set<char> st;
     
     begin:
     system("cls");
-    puts("Input a char and a num on a line, you can input many until \"0\"");
+    puts(type?"4Key Settings:":"Muse Dash Settings:");
+    puts("Input a char and a number on a line, you can input many until \"0\" \n");
     
     keys.clear();
     st.clear();
-    num = 0;
     
     while(true)
     {
@@ -128,7 +158,6 @@ void ResetKey()
             continue;
         }
         keys.emplace_back(c, x);
-        num = max(num, x);
     }
     
     puts("Sure to Save?(y/n)");
@@ -140,10 +169,11 @@ void ResetKey()
         else if(c == 'y' or c == 'Y') break;
     }
     
-    Sleep(OneSecond);
     puts("Saving...");
-    setting.set(keys, num);
+    Sleep(OneSecond);
+    setting[type].set(keys);
     puts("The settings has saved!");
+    Sleep(OneSecond);
 }
 
 #endif // _MDLP_SETTING

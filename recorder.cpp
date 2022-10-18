@@ -52,14 +52,6 @@ void About()
     WaitForInput();
 }
 
-void Help()
-{
-    ClearScreen();
-    setting.printKey();
-    Sleep(OneSecond/10);
-    WaitForInput();
-}
-
 void Save(string name, int cnt, int len, int type)
 {
     ClearScreen();
@@ -126,6 +118,7 @@ void Record()
     int type;
     cin >> type;
     string type_name = type == 1 ? "MuseDashMode" : "4KMode";
+    type--;
     
     name = "data/music/" + type_name + "/" + name + ".rbq";
     FILE *fw = fopen(name.data(), "w");
@@ -157,7 +150,7 @@ void Record()
         char c = _getch();
         if(c == 'q' or c == 'Q')
             break;
-        int key = setting.checkKey(c);
+        int key = setting[type].checkKey(c);
         if(key != -1)
         {
             fprintf(fw, "%d ", clock()-start_time);

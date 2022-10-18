@@ -97,7 +97,7 @@ LRESULT CALLBACK MD_LowLevelKeyboardProc(_In_ int nCode, _In_ WPARAM wParam, _In
     */
 
     if(ks->vkCode == 27) md_quit_flag=true;
-    int now = setting.checkKey(ks->vkCode);
+    int now = setting[0].checkKey(ks->vkCode);
 
     if(now!=-1)
     {

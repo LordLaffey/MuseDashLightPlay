@@ -105,7 +105,7 @@ LRESULT CALLBACK FourKey_LowLevelKeyboardProc(_In_ int nCode, _In_ WPARAM wParam
     */
 
     if(ks->vkCode == 27) fourkey_quit_flag=true;
-    int now = setting.checkKey(ks->vkCode);
+    int now = setting[1].checkKey(ks->vkCode);
 
     if(now!=-1)
     {

@@ -24,7 +24,8 @@ int main()
     HideCursor();
     ClearScreen();
     CheckFiles();
-    setting.load();
+    setting[0].Prework(0);
+    setting[1].Prework(1);
     Music.MusicPrework();
     while(true)
     {
