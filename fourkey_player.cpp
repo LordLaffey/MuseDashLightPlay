@@ -170,11 +170,10 @@ void FourkeyPrintScreen()
     static char output[20][40];
     static char buf[1000];
     static vector<Note> note;
-    memset(output, ' ', sizeof(output));
+
     while(!song.isEnd())
     {
         if(fourkey_quit_flag) return ;
-        ClearScreen();
         con << "Perfect\tGood\tBad\tMiss" << endl;
         con << (int)song.perfect_tot << "\t" << (int)song.good_tot << "\t" 
             << (int)song.bad_tot << "\t" << (int)song.miss_tot << endl;
@@ -221,7 +220,7 @@ void FourkeyPrintScreen()
         memset(buf, 0, sizeof(buf));
         for(int i = 1; i <= 15; i++)
         {
-            output[i][29] = '\n';
+            output[i][30] = '\n';
             strcat(buf+1, output[i]+1);
         }
         con << (buf+1);
