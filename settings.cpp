@@ -1,7 +1,6 @@
 #ifndef _MDLP_SETTING
 #define _MDLP_SETTING
 
-#include <sec_api/stdio_s.h>
 #include <vector>
 #include <set>
 #include "include/header.h"
