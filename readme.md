@@ -17,7 +17,7 @@ Perfect         Bad             Miss
 ===============================================
 ```
 
-界面(FourKey Mode):
+界面(FourKey Mode)：
 
 ```
 Perfect Good    bad    miss
