@@ -83,7 +83,7 @@ void MDPlayerMain()
  * @param wParam 消息类型
  * @param lParam 指向某个结构体的指针，这里是 KBDLLHOOKSTRUCT（低级键盘输入事件）
 */
-LRESULT CALLBACK LowLevelKeyboardProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARAM lParam)
+LRESULT CALLBACK MD_LowLevelKeyboardProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARAM lParam)
 {
     KBDLLHOOKSTRUCT *ks = (KBDLLHOOKSTRUCT*)lParam;		// 包含低级键盘输入事件信息
     /*
@@ -117,7 +117,7 @@ void MDCheckKeys()
     // 安装钩子
     md_keyboardHook = SetWindowsHookEx(
         WH_KEYBOARD_LL,			// 钩子类型，WH_KEYBOARD_LL 为键盘钩子
-        LowLevelKeyboardProc,	// 指向钩子函数的指针
+        MD_LowLevelKeyboardProc,	// 指向钩子函数的指针
         GetModuleHandleA(NULL),	// Dll 句柄
         (DWORD)NULL
     );
@@ -234,7 +234,7 @@ void MDChangeStatus(int status){
 Perfect         Bad             Miss
 7777            7777            7777
 -----------------------------------------------
-()    <         
+()    <      O===========O
 () <     <
 ===============================================
 */

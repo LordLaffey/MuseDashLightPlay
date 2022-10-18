@@ -152,7 +152,7 @@ public:
                 int s=GetNoteState(note.start);
                 if(note.hvcheck)
                 {
-                    if(NowTime()>note.end&&trackNum==2)
+                    if(NowTime()>note.end)
                         track[line].now_note++,s=1;
                     else s=4;
                 }
