@@ -43,6 +43,7 @@ void MDPlayerMain()
     WaitForInput();
     Print("Ready...\n", 9);
     Print("GO!!!\n", 6);
+    ClearScreen();
     
     con.open();
     start_time = clock();
