@@ -96,7 +96,7 @@ public:
             else
                 end=start;
             
-            track[line].notes.emplace_back(type, start, end);
+            track[line].notes.emplace_back(type, start+OneSecond, end+OneSecond);
         }
         for(int i=1; i<=trackNum; i++) track[i].note_cnt=track[i].notes.size()-1;
         

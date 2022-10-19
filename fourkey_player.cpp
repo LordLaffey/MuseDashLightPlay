@@ -201,7 +201,7 @@ void FourkeyPrintScreen()
                         for(int j = 1; j<=4; j++)
                             output[spos][st+j] = '~';
                     }
-                    else if(spos>=15) spos=16;
+                    else if(spos>15) spos=16;
                     if(epos >= 0 and epos <= 15)
                     {
                         for(int j = 1; j<=4; j++)
