@@ -5,8 +5,6 @@
  * @date 2022-10-17
 */
 
-#include <vector>
-#include <thread>
 #include "include/console.h"
 #include "include/header.h"
 #include "include/song.h"
@@ -214,8 +212,10 @@ void MDPrintScreen()
             else if(md_status==2) con << "Great  ";
         }
         else con << "       ";
+        pair<string,string> MS = GetMinuteSecond(song.GetAllTime()-NowTime());
+        con<<setw(15)<<MS.first<<":"<<MS.second;
         if(md_combo>=5)
-            con<<setw(45)<<"Combo: "<<md_combo<<endl;
+            con<<setw(19)<<"Combo: "<<md_combo<<endl;
 
         con.update();
         this_thread::sleep_for(chrono::milliseconds(20));

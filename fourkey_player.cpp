@@ -10,7 +10,6 @@
 #include "include/song.h"
 #include "settings.cpp"
 #include "music.cpp"
-#include <wingdi.h>
 using namespace std;
 
 void FourKeyPlayerMain();
@@ -227,12 +226,15 @@ void FourkeyPrintScreen()
         con << "====----====----====----====" << endl;
         if(fourkey_status != -1 && NowTime() - fourkey_status_start <= Status_Time)
         {
+            if(fourkey_status == 0) con << "Miss   ";
             if(fourkey_status == 1) con << "Perfect";
             else if(fourkey_status == 2) con << "Good   ";
             else if(fourkey_status == 3) con << "Bad    ";
         }
         else con << "       ";
-        if(fourkey_combo >= 5) con << setw(20) << "Combo: " << fourkey_combo;
+        pair<string,string> MS = GetMinuteSecond(song.GetAllTime()-NowTime());
+        con << setw(6) << MS.first << ":" << MS.second;
+        if(fourkey_combo >= 5) con << setw(11) << "Combo: " << fourkey_combo;
         con.update();
         this_thread::sleep_for(chrono::milliseconds(20));
     }

@@ -181,6 +181,7 @@ public:
     }
 
     bool isEnd() { return NowTime()>=allTime;}
+    int GetAllTime() { return allTime;}
 };
 
 static Song song;

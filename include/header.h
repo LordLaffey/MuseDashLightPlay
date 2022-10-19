@@ -4,7 +4,13 @@
 #ifndef _MDLP_HEADER
 #define _MDLP_HEADER
 
-#include <bits/stdc++.h>
+#include <iostream>
+#include <cstdio>
+#include <atomic>
+#include <iomanip>
+#include <vector>
+#include <set>
+#include <thread>
 #include <windows.h>
 #include <conio.h>
 #include <io.h>
@@ -22,6 +28,18 @@ static int start_time;
 static int NowTime()
 {
     return clock()-start_time;
+}
+
+std::pair<std::string,std::string> GetMinuteSecond(int time){
+    
+    time/=1000;
+    int minute=time/60;
+    int second=time%60;
+    std::string min=std::to_string(minute),sec=std::to_string(second);
+    if(minute<10) min="0"+min;
+    if(second<10) sec="0"+sec;
+    return std::make_pair(min,sec);
+    
 }
 
 static char lower(char c)
