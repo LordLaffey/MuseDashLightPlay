@@ -86,6 +86,7 @@ public:
         for(int i=1; i<=trackNum; i++) track[i].reset();
 
         fscanf(fr, "%d %d %d", &note_cnt, &allTime, &type);
+        allTime+=OneSecond;
         trackNum=type*2; // 转换为轨道数
         for(int i = 1; i <= note_cnt; i++)
         {
