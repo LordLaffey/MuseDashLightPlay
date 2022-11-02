@@ -1,8 +1,9 @@
 /**
- * @file xkey_player.cpp
- * @authors LordLaffey, Ptilopsis_w
- * @version v1.05
- * @date 2022-10-17
+ * @file foutkey_player.cpp
+ * @details The player of FourKey Mode
+ * @authors LordLaffey, Ptilopsis_w, qingchenling
+ * @version v1.06
+ * @date 2022-11-2
  */
 
 #include "include/header.h"
@@ -16,7 +17,7 @@ void FourKeyPlayerMain();
 void FourkeyPrintScreen();
 void FourKeyCheckKeys();
 void FourKeyChangeStatus(int);
-void FourKeyPrework();
+bool FourKeyPrework();
 void FourKeyEndwork();
 
 HHOOK fourkey_keyboardHook = 0;     // 钩子句柄
@@ -26,7 +27,7 @@ atomic<bool> fourkey_quit_flag;
 void FourKeyPlayerMain()
 {
     ClearScreen();
-    FourKeyPrework();
+    if(!FourKeyPrework()) return ;
     
     cout << "Press any key to start" << endl;
     WaitForInput();
@@ -45,44 +46,6 @@ void FourKeyPlayerMain()
     Sleep(OneSecond);
     FourKeyEndwork();
 
-}
-
-// to make the Main() function more clear
-void FourKeyPrework(){
-    
-    FILE* fr = Music.ChooseMusic(2);
-    if(!song.LoadSpectrum(fr))
-    {
-        cout << "No such file!" << endl;
-        Sleep(OneSecond);
-        return void();
-    }
-    
-    fourkey_combo = 0;
-    fourkey_quit_flag = false;
-    FourKeyChangeStatus(-1);
-    
-}
-
-// to make the Main() function more clear
-void FourKeyEndwork(){
-    
-    ClearScreen();
-    cout << "Perfect\tGood\tBad\tMiss" << endl;
-    cout << (int)song.perfect_tot << "\t" << (int)song.good_tot << "\t" 
-        << (int)song.bad_tot << "\t" << (int)song.miss_tot << endl;
-    cout << "----------------------------" << endl;
-    cout << "Ended" <<endl;
-    cout << "Press 'q' to return to the main menu" << endl;
-    
-    while(1)
-    {
-        if(!_kbhit()) continue;
-        char c = _getch();
-        if(c == 'q') break;
-    }
-    ClearScreen();
-    
 }
 
 /**
@@ -163,7 +126,7 @@ void FourKeyCheckKeys()
 }
 
 /**
- * 屏幕打印线程
+ * @brief 屏幕打印线程
 */
 void FourkeyPrintScreen()
 {
@@ -243,12 +206,53 @@ void FourkeyPrintScreen()
 }
 
 /**
- * 更改实时响应状态
+ * @brief 更改实时响应状态
 */
 void FourKeyChangeStatus(int status){
     
     fourkey_status = status;
     fourkey_status_start = NowTime();
+    
+}
+
+/**
+ * @brief To make the Main() function more clear.
+ * @return 是否成功读取谱面
+*/
+bool FourKeyPrework(){
+    
+    FILE* fr = Music.ChooseMusic(2);
+    if(!song.LoadSpectrum(fr))
+    {
+        Sleep(OneSecond);
+        return false;
+    }
+    song.MakeHolds(1);
+        
+    fourkey_combo = 0;
+    fourkey_quit_flag = false;
+    FourKeyChangeStatus(-1);
+    return true;
+    
+}
+
+void FourKeyEndwork(){
+    
+    ClearScreen();
+    cout << "Perfect\tGood\tBad\tMiss" << endl;
+    cout << (int)song.perfect_tot << "\t" << (int)song.good_tot << "\t" 
+        << (int)song.bad_tot << "\t" << (int)song.miss_tot << endl;
+    cout << "----------------------------" << endl;
+    cout << "Ended" <<endl;
+    cout << "Press 'q' to return to the main menu" << endl;
+    
+    while(1)
+    {
+        if(!_kbhit()) continue;
+        char c = _getch();
+        if(c == 'q') break;
+    }
+    ClearScreen();
     
 }
 

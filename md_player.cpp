@@ -1,8 +1,9 @@
 /**
- * @details The player of MDLP
- * @author Ptilosis_w, LordLaffey
- * @version v1.05
- * @date 2022-10-17
+ * @file md_player.cpp
+ * @details The player of MuseDash Mode
+ * @authors Ptilosis_w, LordLaffey, qingchenling
+ * @version v1.06
+ * @date 2022-11-2
 */
 
 #include "include/console.h"
@@ -18,6 +19,9 @@ void MDPrintScreen();
 void MDPlayerMain();
 void MDCheckKeys();
 void MDChangeStatus(int);
+void MDMakeHolds();
+bool MDPrework();
+void MDEndwork();
 
 HHOOK md_keyboardHook = 0;     // 钩子句柄
 atomic<int> md_combo;
@@ -27,17 +31,7 @@ atomic<bool> md_quit_flag;
 void MDPlayerMain()
 {
     ClearScreen();
-    
-    FILE* file = Music.ChooseMusic(1);
-    if(!song.LoadSpectrum(file))
-    {
-        puts("No such file!");
-        return void();
-    }
-
-    md_quit_flag = false;
-    MDChangeStatus(-1);
-    md_combo = 0;
+    if(!MDPrework()) return ;
     
     cout << "Press any key to start" << endl;
     WaitForInput();
@@ -54,26 +48,9 @@ void MDPlayerMain()
 
     con.close();
     
-    ClearScreen();
-    
-    if(song.miss_tot==0) Print("Full",5),Print(" Combo!",15);
-    
     Sleep(OneSecond);
-    ClearScreen();
-    cout << "-----------------------------------------------" << endl;
-    cout << "Perfect\t\tGreat\t\tMiss" << endl;
-    cout << (int)song.perfect_tot << "\t\t" << (int)song.good_tot << "\t\t" << (int)song.miss_tot << endl;
-    cout << "-----------------------------------------------" << endl;
-    cout << "Ended" << endl;
-    cout << "Press 'q' to return to the main menu" << endl;
-    while(1)
-    {
-        if(!_kbhit()) continue;
-        char c = _getch();
-        if(c == 'q') break;
-    }
+    MDEndwork();
     
-    ClearScreen();
 }
 
 /**
@@ -228,6 +205,49 @@ void MDChangeStatus(int status){
 
     md_status=status;
     md_status_start=NowTime();
+    
+}
+
+/**
+ * @brief To make the Main() function more clear.
+ * @return 是否成功读取谱面
+*/
+bool MDPrework(){
+    
+    FILE* file = Music.ChooseMusic(1);
+    if(!song.LoadSpectrum(file))
+    {
+        Sleep(OneSecond);
+        return false;
+    }
+    song.MakeHolds(0);
+
+    md_combo = 0;
+    md_quit_flag = false;
+    MDChangeStatus(-1);
+    return true;
+}
+
+// to make the Main() function more clear
+void MDEndwork(){
+    
+    ClearScreen();
+    if(song.miss_tot==0) Print("Full",5),Print(" Combo!",15);
+    Sleep(OneSecond);
+    ClearScreen();
+    cout << "-----------------------------------------------" << endl;
+    cout << "Perfect\t\tGreat\t\tMiss" << endl;
+    cout << (int)song.perfect_tot << "\t\t" << (int)song.good_tot << "\t\t" << (int)song.miss_tot << endl;
+    cout << "-----------------------------------------------" << endl;
+    cout << "Ended" << endl;
+    cout << "Press 'q' to return to the main menu" << endl;
+    while(1)
+    {
+        if(!_kbhit()) continue;
+        char c = _getch();
+        if(c == 'q') break;
+    }
+    ClearScreen();
     
 }
 

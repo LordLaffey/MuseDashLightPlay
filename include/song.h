@@ -7,6 +7,7 @@ using namespace std;
 struct Note {
     int type;       // 1: 短键 2: 长条
     int start,end;
+    int len = 0;
     bool hvcheck = false;
     Note() {}
     Note(int t, int s, int e) : type(t), start(s), end(e) {}
@@ -82,6 +83,7 @@ public:
         int type,readType;
         perfect_tot = 0;
         good_tot = 0;
+        bad_tot = 0;
         miss_tot = 0;
         for(int i=1; i<=trackNum; i++) track[i].reset();
 
@@ -109,9 +111,30 @@ public:
     }
 
     /**
+     * @brief 设置 hold 的初始长度
+     * @param flag [0|1] MDMode/FKMode 
+    */
+    void MakeHolds(bool flag){
+        
+        const int Speed=!flag?MDSpeed:FourKeySpeed;
+        for(int i = 1; i <= trackNum; i++)
+        {
+            for(auto &v : track[i].notes)
+            {
+                if(v.type!=2) continue;
+                int spos = Speed * (v.start-NowTime()) + 2;
+                int epos = Speed * (v.end-NowTime()) + 2;
+                v.len = epos - spos;
+            }
+        }
+        
+    }
+
+    /**
      * @brief 调整当前时间
      * @return 是否有 miss
     */
+    
     bool run()
     {
         int miss=0;
@@ -130,7 +153,7 @@ public:
      /**
      * @brief 获取指定行行首note的状态
      * @param line 轨道号
-     * @param type 建按下(1)/抬起(0)
+     * @param type [0|1] 键按下/键抬起
      * @return 0: Miss, 1: Perfect, 2: Great, 3: Bad, 4: Far, 5: Cannot See
     */
 
