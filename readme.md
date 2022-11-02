@@ -92,6 +92,8 @@ v1.04 增加了 combo 显示。
 
 v1.05 增加了 hold 键。
 
+v1.06 修复乐 hold 键伸缩的 bug
+
 ### recorder:
 
 v1.11 支持 record 多个谱面。
