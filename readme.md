@@ -4,8 +4,11 @@
 
 Muse Dash Light Play - 一款基于控制台的简约版音游。
 
-![MD大将军](https://user-images.githubusercontent.com/76830236/199501604-e8a50262-e669-4365-8b7a-555c6e44179e.png)
+![MD ico](https://user-images.githubusercontent.com/76830236/199634530-150db221-c00c-44d2-aaeb-b91aff1a224a.png)
+> 预设图标
 
+![MD大将军](https://user-images.githubusercontent.com/76830236/199501604-e8a50262-e669-4365-8b7a-555c6e44179e.png)
+> 看板娘
 
 版本：v1.21
 
