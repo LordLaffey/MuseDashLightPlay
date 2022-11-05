@@ -116,15 +116,13 @@ public:
     */
     void MakeHolds(bool flag){
         
-        const int Speed=!flag?MDSpeed:FourKeySpeed;
+        const double Speed=!flag?MDSpeed:FourKeySpeed;
         for(int i = 1; i <= trackNum; i++)
         {
             for(auto &v : track[i].notes)
             {
                 if(v.type!=2) continue;
-                int spos = Speed * (v.start-NowTime()) + 2;
-                int epos = Speed * (v.end-NowTime()) + 2;
-                v.len = epos - spos;
+                v.len = Speed * (v.end-v.start);
             }
         }
         
