@@ -4,12 +4,6 @@
 
 Muse Dash Light Play - 一款基于控制台的简约版音游。
 
-![MD ico](https://user-images.githubusercontent.com/76830236/199634530-150db221-c00c-44d2-aaeb-b91aff1a224a.png)
-> 预设图标
-
-![MD大将军](https://user-images.githubusercontent.com/76830236/199501604-e8a50262-e669-4365-8b7a-555c6e44179e.png)
-> 看板娘
-
 版本：v1.21
 
 界面(MuseDash Mode)：
@@ -97,8 +91,6 @@ v1.03 调整了判定时间。
 v1.04 增加了 combo 显示。
 
 v1.05 增加了 hold 键。
-
-v1.06 修复了 hold 键伸缩的 bug
 
 ### recorder:
 
